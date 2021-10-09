@@ -1,0 +1,146 @@
+UMLsec Profile for UML 2 / ECore 3.0
+====================================
+Content: OCL Constraints
+Author: Holger Schmidt
+
+UMLsec Stereotypes:
+fair exchange: activity diagram and use case diagram
+provable: ?
+rbac: activity diagram
+Internet, encrypted, LAN, wire: deployment diagram
+secrecy, integrity, high: dependency
+data security: package diagrams
+no down-flow, no up-flow: state chart diagrams
+guarded access: ???
+guarded: ???
+
+
+<<secure dependency>>
+
+existsCallOrSendDependency:
+===========================
+Packages with stereotype secure dependency contain at least one dependency with stereotype call or send.
+
+(Package.allInstances()->select(p |
+	(p.oclIsTypeOf(Package)) and
+	(p.oclAsType(Package).getAppliedStereotypes().name->includes('secure dependency'))).ownedElement.getAppliedStereotypes().name->includes('send')) or
+(Package.allInstances()->select(p |
+	(p.oclIsTypeOf(Package)) and (p.oclAsType(Package).getAppliedStereotypes().name->includes('secure dependency'))).ownedElement.getAppliedStereotypes().name->includes('call'))
+
+
+secureDependency:
+=================
+For each call or send dependency connecting two classes contained in a package that is equipped with
+the stereotype secure dependency the source and target classes must be equipped with the stereotype critical
+if the dependency has the stereotype secrecy or integrity.
+
+(Package.allInstances()->select(p | 
+	(p.oclIsTypeOf(Package)) and (p.oclAsType(Package).getAppliedStereotypes().name->includes('secure dependency')))).allOwnedElements()->select(d |
+		(d.oclIsTypeOf(Dependency)) and
+		((d.oclAsType(Dependency).getAppliedStereotypes().name->includes('call'))
+			or (d.oclAsType(Dependency).getAppliedStereotypes().name->includes('send'))
+		))->forAll(d |
+			(d.oclAsType(Dependency).source->forAll(oclIsTypeOf(Class))) and
+			(d.oclAsType(Dependency).target->forAll(oclIsTypeOf(Class))) and
+			(d.oclAsType(Dependency).getAppliedStereotypes().name->includes('secrecy') and
+			 d.oclAsType(Dependency).source.getAppliedStereotypes().name->includes('critical') and
+			 d.oclAsType(Dependency).target.getAppliedStereotypes().name->includes('critical')) or
+			(d.oclAsType(Dependency).getAppliedStereotypes().name->includes('integrity') and
+			 d.oclAsType(Dependency).source.getAppliedStereotypes().name->includes('critical') and
+			 d.oclAsType(Dependency).target.getAppliedStereotypes().name->includes('critical'))
+			)
+
+
+secrecy_SourceAndTargetAreCritical:
+===================================
+*(also covered by secureDependency)
+If a dependency has the stereotype secrecy, then the source and target classes must have the stereotype
+critical.
+
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('secrecy')).source.getAppliedStereotypes().name->includes('critical')) and
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('secrecy')).target.getAppliedStereotypes().name->includes('critical'))
+
+
+integrity_SourceAndTargetAreCritical:
+===================================
+*(also covered by secureDependency)
+If a dependency has the stereotype integrity, then the source and target classes must have the stereotype
+critical.
+
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('integrity')).source.getAppliedStereotypes().name->includes('critical')) and
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('integrity')).target.getAppliedStereotypes().name->includes('critical'))
+
+
+secrecy_SecrecyTaggedValuesAreEqual:
+====================================
+If the dependency has the stereotype secrecy, then the source and target classes must have tags secrecy with
+equal tagged values.
+
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('secrecy'))->forAll(
+		d_1 | (
+			d_1.oclAsType(Dependency).source.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical').getValue(
+				d_1.oclAsType(Dependency).source.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical'),'secrecy')
+			)
+		= (
+			d_1.oclAsType(Dependency).target.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical').getValue(
+				d_1.oclAsType(Dependency).target.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical'),'secrecy')
+			)
+		)
+)
+
+
+integrity_IntegrityTaggedValuesAreEqual:
+========================================
+If the dependency has the stereotype integrity, then the source and target classes have tags integrity with
+equal tagged values.
+
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('integrity'))->forAll(
+		d_1 | (
+			d_1.oclAsType(Dependency).source.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical').getValue(
+				d_1.oclAsType(Dependency).source.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical'),'integrity')
+			)
+		= (
+			d_1.oclAsType(Dependency).target.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical').getValue(
+				d_1.oclAsType(Dependency).target.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical'),'integrity')
+			)
+		)
+)
+
+
+high_HighTaggedValuesAreEqual:
+==============================
+If the dependency has the stereotype high, then the source and target classes have tags high with
+equal tagged values.
+
+(Dependency.allInstances()->select(
+	d | d.oclAsType(Dependency).getAppliedStereotypes().name->includes('high'))->forAll(
+		d_1 | (
+			d_1.oclAsType(Dependency).source.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical').getValue(
+				d_1.oclAsType(Dependency).source.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical'),'high')
+			)
+		= (
+			d_1.oclAsType(Dependency).target.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical').getValue(
+				d_1.oclAsType(Dependency).target.getAppliedStereotypes()->any(s | s.oclAsType(Stereotype).name='critical'),'high')
+			)
+		)
+)
+
+
+To be formalized:
+=================
+- The values of the tag secrecy are the names of expressions, attributes or message argument variables of the current object
+  the secrecy of which is supposed to be protected.
+- cf. pp. 58 ff. UMLsec
+
+Problems:
+=========
+- What is a subsystem instance? (important, since subsystem is a short form for subsystem instance)
+- Scenario with class and interface class connected via a dependency and a realization of the interface class
+  is not yet covered.
+- implies is not working

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:UMLsec4UML2="http://UMLsec4UML2/schemas/UMLsec4UML2/_J9sj4JjAEd-jGbcGGvPV7Q/3" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://UMLsec4UML2/schemas/UMLsec4UML2/_J9sj4JjAEd-jGbcGGvPV7Q/3 /UMLsec4UML2/UMLsec4UML2.profile.uml#_J9tyAJjAEd-jGbcGGvPV7Q">
+  <uml:Model xmi:id="_5RGzQCjvEeyR_KEkqm0-bw" name="CompSec">
+    <packageImport xmi:type="uml:PackageImport" xmi:id="_5SCAUCjvEeyR_KEkqm0-bw">
+      <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+    </packageImport>
+    <packagedElement xmi:type="uml:Interaction" xmi:id="_5RKdoCjvEeyR_KEkqm0-bw" name="Interaction1"/>
+    <packagedElement xmi:type="uml:Model" xmi:id="__1NZcCjvEeyR_KEkqm0-bw" name="Model6">
+      <ownedComment xmi:type="uml:Comment" xmi:id="_vuXcQCjwEeyR_KEkqm0-bw" annotatedElement="_6KvJ8CjvEeyR_KEkqm0-bw">
+        <body>ASD</body>
+      </ownedComment>
+      <packagedElement xmi:type="uml:Component" xmi:id="_6KvJ8CjvEeyR_KEkqm0-bw" name="Component4">
+        <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_83Js4CjvEeyR_KEkqm0-bw" client="_6KvJ8CjvEeyR_KEkqm0-bw" supplier="_6t5hYCjvEeyR_KEkqm0-bw" contract="_6t5hYCjvEeyR_KEkqm0-bw"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Interface" xmi:id="_6t5hYCjvEeyR_KEkqm0-bw" name="Interface5"/>
+      <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_dCAq0CjwEeyR_KEkqm0-bw">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_dCBR4CjwEeyR_KEkqm0-bw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="/UMLsec4UML2/UMLsec4UML2.profile.uml#_J9pgkJjAEd-jGbcGGvPV7Q"/>
+        </eAnnotations>
+        <appliedProfile xmi:type="uml:Profile" href="/UMLsec4UML2/UMLsec4UML2.profile.uml#_SFU2gJi5Ed-bG7zPlhFfmQ"/>
+      </profileApplication>
+      <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_dCB48CjwEeyR_KEkqm0-bw">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_dCB48SjwEeyR_KEkqm0-bw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="/UMLsec4UML2/UMLsec4UML2.profile.uml#_J9tyAJjAEd-jGbcGGvPV7Q"/>
+        </eAnnotations>
+        <appliedProfile xmi:type="uml:Profile" href="/UMLsec4UML2/UMLsec4UML2.profile.uml#_Tp0vIJi5Ed-bG7zPlhFfmQ"/>
+      </profileApplication>
+    </packagedElement>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_5RiRECjvEeyR_KEkqm0-bw">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_5RjfMSjvEeyR_KEkqm0-bw" source="PapyrusVersion">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5RjfMijvEeyR_KEkqm0-bw" key="Version" value="0.0.4"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5RjfMyjvEeyR_KEkqm0-bw" key="Comment" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5RjfNCjvEeyR_KEkqm0-bw" key="Copyright" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5RjfNSjvEeyR_KEkqm0-bw" key="Date" value="2010-07-26"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5RjfNijvEeyR_KEkqm0-bw" key="Author" value="schmidt"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_5RjfMCjvEeyR_KEkqm0-bw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="/UMLsec4UML2/UMLsec4UML2.profile.uml#_J9pgkJjAEd-jGbcGGvPV7Q"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="/UMLsec4UML2/UMLsec4UML2.profile.uml#_SFU2gJi5Ed-bG7zPlhFfmQ"/>
+    </profileApplication>
+  </uml:Model>
+  <UMLsec4UML2:datasecurity xmi:id="_d9ajICjwEeyR_KEkqm0-bw" base_Model="__1NZcCjvEeyR_KEkqm0-bw" base_Package="__1NZcCjvEeyR_KEkqm0-bw"/>
+  <UMLsec4UML2:critical xmi:id="_nlJ5cCjwEeyR_KEkqm0-bw" base_Component="_6KvJ8CjvEeyR_KEkqm0-bw" base_Class="_6KvJ8CjvEeyR_KEkqm0-bw"/>
+</xmi:XMI>
