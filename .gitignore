@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Backend/obj
+/Backend/docker-compose.dcproj.user
+/Backend/docker-compose.dcproj
+/Backend/IT_security_dal/obj
+/Backend/IT_security_dal/bin/Debug/net5.0
+/Backend/IT_security_common/obj
+/Backend/IT_security_common/bin/Debug/net5.0
+/Backend/IT_security_bll/obj
+/Backend/IT_security_bll/bin/Debug/net5.0
+/Backend/IT_security_backend/bin/Debug/net5.0
+/Backend/IT_security_backend/obj
+/.vs
+/Backend/bin/Debug

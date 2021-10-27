@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  it_security_api:
+    image: ${DOCKER_REGISTRY-}itsecurityapi
+    build:
+      context: .
+      dockerfile: IT_security_backend/Dockerfile
