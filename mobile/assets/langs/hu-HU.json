@@ -1,0 +1,16 @@
+{
+  "email": "Email",
+  "password": "Jelszó",
+  "signIn": "Belépés emaillel",
+  "registration": "Regisztráció",
+  "forgotPassword": "Elfelejtett Jelszó",
+  "login": "Belépés",
+  "back": "Vissza",
+  "phone": "Telefonszám",
+  "the": "A GDPR",
+  "gdpr": " szabályzatot",
+  "know": " elfogadom",
+  "forgotPass": "elfelejtett jelszó",
+  "send": "Jelszó visszaállítás",
+  "logout": "Kijelentkezés"
+}
