@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace IT_security_bll.Dto.Caff
 {
-    public class CaffUploadResponseDto
+    public class CaffFilter
     {
-        
+        public string CaffName { get; set; }
     }
 }

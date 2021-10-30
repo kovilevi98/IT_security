@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace IT_security_bll.Dto.User
 {
-    public class UserDto
+    public class UpdateUserDto
     {
-        public string UserId { get; set; }
+        [Required]
+        [StringLength(50)]
         public string LastName { get; set; }
+        [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
-        public string Email { get; set; }
     }
 }
