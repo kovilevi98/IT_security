@@ -42,20 +42,20 @@ vector<unsigned char> readFile(const char* filename)
 	return vec;
 }
 
-uint8_t read8BytesInt(const vector<unsigned char>& in,const uint32_t start) {
+uint64_t read8BytesIntBe(const vector<unsigned char>& in,const uint64_t start) {
 	if (in.size() < start + 8) {
 		throw new exception(); // Index out of bounds
 	}
-	uint8_t accumulator = 0;
-	for (uint32_t i = start; i < start + 8; i++) {
-		accumulator = (accumulator << 8) | (uint8_t)in[i];
+	uint64_t accumulator = 0;
+	for (uint64_t i = start; i < start + 8; i++) {
+		accumulator = (accumulator << 8) | (uint64_t)in[i];
 	}
 	return accumulator;
 }
 
-string readCaption(const vector<unsigned char>& in, const uint32_t start, const uint32_t headerSize) {
+string readCaption(const vector<unsigned char>& in, const uint64_t start, const uint64_t headerSize) {
 	vector<unsigned char> chars;
-	uint32_t i = start;
+	uint64_t i = start;
 	while (i < headerSize && in[i] != '\n') {
 		chars.push_back(in[i++]);
 	}
@@ -66,9 +66,9 @@ string readCaption(const vector<unsigned char>& in, const uint32_t start, const 
 	return text;
 }
 
-vector<string> readTags(const vector<unsigned char>& in, const uint32_t start, const uint32_t headerSize) {
+vector<string> readTags(const vector<unsigned char>& in, const uint64_t start, const uint64_t headerSize) {
 	vector<string> tags;
-	uint32_t i = start;
+	uint64_t i = start;
 	if (in[headerSize - 1] != '\0') {
 		throw new exception(); // Tags not properly terminated
 	}
@@ -87,39 +87,65 @@ vector<string> readTags(const vector<unsigned char>& in, const uint32_t start, c
 	return tags;
 }
 
+void bmpAddHeader(vector<unsigned char>& bmp, const uint64_t bmpSize) {
+	bmp.push_back(0x42);
+	bmp.push_back(0x4d);
+	bmp.push_back((unsigned char)(bmpSize >> 0));
+	bmp.push_back((unsigned char)(bmpSize >> 1));
+	bmp.push_back((unsigned char)(bmpSize >> 2));
+	bmp.push_back((unsigned char)(bmpSize >> 3));
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+	bmp.push_back(0x36);
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+}
+
+void bmpAddDibHeader(vector<unsigned char>& bmp, const uint64_t width, const uint64_t height) {
+	bmp.push_back(0x28);
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+	bmp.push_back(0x00);
+}
+
 int main()
 {
 	vector<unsigned char> ciff = readFile("c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\test1.ciff");
-	const int minFileSize = 38; // magic (4) + header_size (8) + content_size(8) + width (8) + height (8) + caption (>1) + tags (>1)
-	const int fileSize = ciff.size();
+	const size_t minFileSize = 38; // magic (4) + header_size (8) + content_size(8) + width (8) + height (8) + caption (>1) + tags (>1)
+	const size_t fileSize = ciff.size();
 	if (fileSize < minFileSize) {
 		throw new exception(); // File too short
 	}
 	if (!(ciff[0] == 'C' && ciff[1] == 'I' && ciff[2] == 'F' && ciff[3] == 'F')) {
 		throw new exception(); // Invalid magic
 	}
-	uint8_t headerSize = read8BytesInt(ciff, 4);
+	uint64_t headerSize = read8BytesIntBe(ciff, 4);
 	if (headerSize > fileSize) {
 		throw new exception(); // Header size bigger than file size
 	}
-	uint8_t contentSize = read8BytesInt(ciff, 12);
-	uint8_t width = read8BytesInt(ciff, 20);
-	uint8_t height = read8BytesInt(ciff, 28);
-	if ((uint32_t)fileSize != (uint32_t)headerSize + (uint32_t)contentSize) { // Cast to something large enough to avoid overflows
+	uint64_t contentSize = read8BytesIntBe(ciff, 12);
+	uint64_t width = read8BytesIntBe(ciff, 20);
+	uint64_t height = read8BytesIntBe(ciff, 28);
+	if (fileSize != headerSize + contentSize) { // TODO: overflow detection
 		throw new exception(); // Total size mismatch
 	}
-	if ((uint32_t)contentSize != ((uint32_t)width * (uint32_t)height * (uint32_t)3)) { // Cast to something large enough to avoid overflows
+	if (contentSize != (width * height * 3)) { // TODO: overflow detection
 		throw new exception(); // Content size mismatch
 	}
 	string caption = readCaption(ciff, 36, headerSize);
-	vector<string> tags = readTags(ciff, 36 + caption.length() + 1, headerSize);
+	vector<string> tags = readTags(ciff, 36 + (uint64_t)caption.length() + 1, headerSize);
 
 	printf("%d\n", fileSize);
-	printf("%d\n", headerSize);
-	printf("%d\n", contentSize);
-	printf("%d\n", width);
-	printf("%d\n", height);
+	printf("%ld\n", (unsigned long)headerSize);
+	printf("%ld\n", (unsigned long)contentSize);
+	printf("%ld\n", (unsigned long)width);
+	printf("%ld\n", (unsigned long)height);
 	printf("%s\n", caption.c_str());
 	printf("%d\n", tags.size());
-	printf("%s\n", tags[0].c_str());
+	for (int i = 0; i < tags.size(); i++) {
+		printf("%s\n", tags[i].c_str());
+	}
 }
