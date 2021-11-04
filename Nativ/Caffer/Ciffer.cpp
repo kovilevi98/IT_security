@@ -118,6 +118,7 @@ std::vector<unsigned char> ciffToBmp(std::vector<unsigned char>& ciff) {
 
 	std::vector<unsigned char> bmp;
 	uint64_t bmpSize = 54 + ((width * 3 + 3) / 4) * 4 * height; // TODO: overflow detection
+	bmp.reserve(bmpSize);
 	bmpAddHeader(bmp, bmpSize);
 	bmpAddDibHeader(bmp, width, height);
 	bmpAddPixelArray(bmp, ciff, headerSize, width, height);
