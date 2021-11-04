@@ -140,6 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Caffer.cpp" />
+    <ClCompile Include="Ciffer.cpp" />
+    <ClCompile Include="Files.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Ciffer.h" />
+    <ClInclude Include="Files.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
