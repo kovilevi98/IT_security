@@ -1,7 +1,10 @@
 #include "Ciffer.h"
 
 uint64_t read8ByteIntLe(const std::vector<unsigned char>& ciff, const uint64_t start) {
-	if (ciff.size() < start + 8) { // TODO: overflow detection
+	return read8ByteIntLe(&ciff[0], ciff.size(), start);
+}
+uint64_t read8ByteIntLe(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start) {
+	if (ciffSize < start + 8) { // TODO: overflow detection
 		throw new std::exception(); // Index out of bounds
 	}
 	uint64_t accumulator = 0;
@@ -12,6 +15,9 @@ uint64_t read8ByteIntLe(const std::vector<unsigned char>& ciff, const uint64_t s
 }
 
 std::string readCaption(const std::vector<unsigned char>& ciff, const uint64_t start, const uint64_t headerSize) {
+	return readCaption(&ciff[0], ciff.size(), start, headerSize);
+}
+std::string readCaption(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start, const uint64_t headerSize) {
 	std::vector<unsigned char> chars;
 	uint64_t i = start;
 	while (i < headerSize && ciff[i] != '\n') {
@@ -25,6 +31,9 @@ std::string readCaption(const std::vector<unsigned char>& ciff, const uint64_t s
 }
 
 std::vector<std::string> readTags(const std::vector<unsigned char>& ciff, const uint64_t start, const uint64_t headerSize) {
+	return readTags(&ciff[0], ciff.size(), start, headerSize);
+}
+std::vector<std::string> readTags(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start, const uint64_t headerSize) {
 	std::vector<std::string> tags;
 	uint64_t i = start;
 	if (ciff[headerSize - 1] != '\0') { // TODO: undeflow detection
@@ -74,7 +83,7 @@ void bmpAddDibHeader(std::vector<unsigned char>& bmp, const uint64_t width, cons
 	bmpAddNumberLe(bmp, 0, 4); // Important colors
 }
 
-void bmpAddPixelArray(std::vector<unsigned char>& bmp, const std::vector<unsigned char>& ciff, const uint64_t start, const uint64_t width, const uint64_t height) {
+void bmpAddPixelArray(std::vector<unsigned char>& bmp, const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start, const uint64_t width, const uint64_t height) {
 	for (uint64_t i = 0; i < height; i++) {
 		uint64_t iMirrored = height - 1 - i; // BMP-s rows are stored from bottom to top
 		for (uint64_t j = 0; j < width; j++) {
@@ -92,36 +101,39 @@ void bmpAddPixelArray(std::vector<unsigned char>& bmp, const std::vector<unsigne
 }
 
 std::vector<unsigned char> ciffToBmp(std::vector<unsigned char>& ciff) {
+	return ciffToBmp(&ciff[0], ciff.size());
+}
+std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t ciffSize) {
 	const size_t minFileSize = 38; // magic (4) + header_size (8) + content_size(8) + width (8) + height (8) + caption (>1) + tags (>1)
-	const size_t fileSize = ciff.size();
+	const size_t fileSize = ciffSize;
 	if (fileSize < minFileSize) {
 		throw new std::exception(); // File too short
 	}
 	if (!(ciff[0] == 'C' && ciff[1] == 'I' && ciff[2] == 'F' && ciff[3] == 'F')) {
 		throw new std::exception(); // Invalid magic
 	}
-	uint64_t headerSize = read8ByteIntLe(ciff, 4);
+	uint64_t headerSize = read8ByteIntLe(ciff, ciffSize, 4);
 	if (headerSize > fileSize) {
 		throw new std::exception(); // Header size bigger than file size
 	}
-	uint64_t contentSize = read8ByteIntLe(ciff, 12);
-	uint64_t width = read8ByteIntLe(ciff, 20);
-	uint64_t height = read8ByteIntLe(ciff, 28);
+	uint64_t contentSize = read8ByteIntLe(ciff, ciffSize, 12);
+	uint64_t width = read8ByteIntLe(ciff, ciffSize, 20);
+	uint64_t height = read8ByteIntLe(ciff, ciffSize, 28);
 	if (fileSize != headerSize + contentSize) { // TODO: overflow detection
 		throw new std::exception(); // Total size mismatch
 	}
 	if (contentSize != (width * height * 3)) { // TODO: overflow detection
 		throw new std::exception(); // Content size mismatch
 	}
-	std::string caption = readCaption(ciff, 36, headerSize);
-	std::vector<std::string> tags = readTags(ciff, 36 + (uint64_t)caption.length() + 1, headerSize); // TODO: overflow detection
+	std::string caption = readCaption(ciff, ciffSize, 36, headerSize);
+	std::vector<std::string> tags = readTags(ciff, ciffSize, 36 + (uint64_t)caption.length() + 1, headerSize); // TODO: overflow detection
 
 	std::vector<unsigned char> bmp;
 	uint64_t bmpSize = 54 + ((width * 3 + 3) / 4) * 4 * height; // TODO: overflow detection
 	bmp.reserve(bmpSize);
 	bmpAddHeader(bmp, bmpSize);
 	bmpAddDibHeader(bmp, width, height);
-	bmpAddPixelArray(bmp, ciff, headerSize, width, height);
+	bmpAddPixelArray(bmp, ciff, ciffSize, headerSize, width, height);
 
 	return bmp;
 }
