@@ -92,7 +92,7 @@ void bmpAddPixelArray(std::vector<unsigned char>& bmp, const unsigned char* ciff
 			bmp.push_back(ciff[offset + 1]); // TODO: overflow detection
 			bmp.push_back(ciff[offset + 0]); // TODO: overflow detection
 		}
-		
+
 		uint64_t padding = (4 - (width * 3) % 4) % 4; // TODO: overflow detection
 		for (uint64_t j = 0; j < padding; j++) { // TODO: overflow detection
 			bmp.push_back(0x00);
