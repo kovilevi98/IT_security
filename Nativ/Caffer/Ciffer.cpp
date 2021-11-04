@@ -1,12 +1,12 @@
 #include "Ciffer.h"
 
-uint64_t read8ByteIntBe(const std::vector<unsigned char>& ciff, const uint64_t start) {
+uint64_t read8ByteIntLe(const std::vector<unsigned char>& ciff, const uint64_t start) {
 	if (ciff.size() < start + 8) { // TODO: overflow detection
 		throw new std::exception(); // Index out of bounds
 	}
 	uint64_t accumulator = 0;
-	for (uint64_t i = start; i < start + 8; i++) { // TODO: overflow detection
-		accumulator = (accumulator << 8) | (uint64_t)ciff[i];
+	for (uint64_t i = 0; i < 8; i++) { // TODO: overflow detection
+		accumulator = accumulator | (uint64_t)ciff[start + i] << (8 * i);
 	}
 	return accumulator;
 }
@@ -83,7 +83,8 @@ void bmpAddPixelArray(std::vector<unsigned char>& bmp, const std::vector<unsigne
 			bmp.push_back(ciff[offset + 1]); // TODO: overflow detection
 			bmp.push_back(ciff[offset + 0]); // TODO: overflow detection
 		}
-		uint64_t padding = 4 - (width * 3) % 4; // TODO: overflow detection
+		
+		uint64_t padding = (4 - (width * 3) % 4) % 4; // TODO: overflow detection
 		for (uint64_t j = 0; j < padding; j++) { // TODO: overflow detection
 			bmp.push_back(0x00);
 		}
@@ -99,13 +100,13 @@ std::vector<unsigned char> ciffToBmp(std::vector<unsigned char>& ciff) {
 	if (!(ciff[0] == 'C' && ciff[1] == 'I' && ciff[2] == 'F' && ciff[3] == 'F')) {
 		throw new std::exception(); // Invalid magic
 	}
-	uint64_t headerSize = read8ByteIntBe(ciff, 4);
+	uint64_t headerSize = read8ByteIntLe(ciff, 4);
 	if (headerSize > fileSize) {
 		throw new std::exception(); // Header size bigger than file size
 	}
-	uint64_t contentSize = read8ByteIntBe(ciff, 12);
-	uint64_t width = read8ByteIntBe(ciff, 20);
-	uint64_t height = read8ByteIntBe(ciff, 28);
+	uint64_t contentSize = read8ByteIntLe(ciff, 12);
+	uint64_t width = read8ByteIntLe(ciff, 20);
+	uint64_t height = read8ByteIntLe(ciff, 28);
 	if (fileSize != headerSize + contentSize) { // TODO: overflow detection
 		throw new std::exception(); // Total size mismatch
 	}
