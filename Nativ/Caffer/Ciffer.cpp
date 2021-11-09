@@ -112,7 +112,7 @@ std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t c
 	if (fileSize != safe_add(headerSize, contentSize)) {
 		throw new std::exception(); // Total size mismatch
 	}
-	if (contentSize != (safe_mul(width, safe_mul(height, 3)))) { // TODO: overflow detection
+	if (contentSize != (safe_mul(width, safe_mul(height, 3)))) {
 		throw new std::exception(); // Content size mismatch
 	}
 

@@ -3,7 +3,7 @@
 using std::vector;
 
 void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, std::vector<uint64_t>& durations, std::vector<vector<unsigned char>>& bmps) {
-	if (*readPosition + 1 > caffSize) { // TODO: overflow detection
+	if (safe_add(*readPosition, 1) > caffSize) {
 		throw new std::exception(); // Last block invalid
 	}
 	const unsigned char blockType = caff[(*readPosition)++];
@@ -12,7 +12,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 		if (safe_add(safe_add(*readPosition, 8), blocklength) > caffSize) {
 			throw new std::exception(); // Block overflows file
 		}
-		*readPosition += 8; // TODO: overflow detection
+		*readPosition = safe_add(*readPosition, 8);
 		if (blocklength < 8) {
 			throw new std::exception(); // Block too short
 		}
