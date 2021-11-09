@@ -9,7 +9,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 	const unsigned char blockType = caff[(*readPosition)++];
 	if (blockType == 0x3) {
 		const uint64_t blocklength = read8ByteIntLe(caff, caffSize, *readPosition);
-		if (*readPosition + 8 + blocklength > caffSize) { // TODO: overflow detection
+		if (safe_add(safe_add(*readPosition, 8), blocklength) > caffSize) {
 			throw new std::exception(); // Block overflows file
 		}
 		*readPosition += 8;
@@ -22,7 +22,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 	else if (blockType == 0x2) {
 		// CAFF credits, skip
 		const uint64_t blocklength = read8ByteIntLe(caff, caffSize, *readPosition);
-		*readPosition += 8 + blocklength; // TODO: overflow detection
+		*readPosition = safe_add(*readPosition, safe_add(8, blocklength));
 	}
 	else {
 		throw new std::exception(); // Invalid block type

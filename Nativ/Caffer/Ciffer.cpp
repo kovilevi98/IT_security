@@ -7,7 +7,8 @@ std::string readCaption(const unsigned char* ciff, const uint64_t ciffSize, cons
 	std::vector<unsigned char> chars;
 	uint64_t i = start;
 	while (i < headerSize && ciff[i] != '\n') {
-		chars.push_back(ciff[i++]); // TODO: overflow detection
+		chars.push_back(ciff[i]); 
+		i = safe_add(i, 1);
 	}
 	if (i == headerSize) {
 		throw new std::exception(); // Caption missing \n terminator
@@ -22,7 +23,7 @@ std::vector<std::string> readTags(const std::vector<unsigned char>& ciff, const 
 std::vector<std::string> readTags(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start, const uint64_t headerSize) {
 	std::vector<std::string> tags;
 	uint64_t i = start;
-	if (ciff[headerSize - 1] != '\0') { // TODO: undeflow detection
+	if (ciff[safe_sub(headerSize, 1)] != '\0') {
 		throw new std::exception(); // Tags not properly terminated
 	}
 	std::vector<unsigned char> currentTag;
@@ -35,14 +36,15 @@ std::vector<std::string> readTags(const unsigned char* ciff, const uint64_t ciff
 		else {
 			currentTag.push_back(ciff[i]);
 		}
-		i++; // TODO: overflow detection
+		i = safe_add(i, 1);
 	}
 	return tags;
 }
 
 void bmpAddNumberLe(std::vector<unsigned char>& bmp, const uint64_t number, const uint64_t bytes) {
-	for (uint64_t i = 0; i < bytes; i++) { // TODO: overflow detection
+	for (uint64_t i = 0; i < bytes;) {
 		bmp.push_back((unsigned char)(number >> (i * 8)));
+		i = safe_add(i, 1);
 	}
 }
 
@@ -74,14 +76,16 @@ void bmpAddPixelArray(std::vector<unsigned char>& bmp, const unsigned char* ciff
 		uint64_t iMirrored = height - 1 - i; // BMP-s rows are stored from bottom to top
 		for (uint64_t j = 0; j < width; j++) {
 			uint64_t offset = start + (iMirrored * width + j) * 3; // TODO: overflow detection
-			bmp.push_back(ciff[offset + 2]); // TODO: overflow detection
-			bmp.push_back(ciff[offset + 1]); // TODO: overflow detection
-			bmp.push_back(ciff[offset + 0]); // TODO: overflow detection
+			bmp.push_back(ciff[safe_add(offset, 2)]);
+			bmp.push_back(ciff[safe_add(offset, 1)]); 
+			bmp.push_back(ciff[safe_add(offset, 0)]);
 		}
 
 		uint64_t padding = (4 - (width * 3) % 4) % 4; // TODO: overflow detection
-		for (uint64_t j = 0; j < padding; j++) { // TODO: overflow detection
+		for (uint64_t j = 0; j < padding;) 
+		{
 			bmp.push_back(0x00);
+			j = safe_add(j, 1);
 		}
 	}
 }
