@@ -2,8 +2,8 @@
 
 using std::vector;
 
-void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, const std::vector<uint64_t>& durations, const std::vector<vector<unsigned char>>& bmps) {
-	if (*readPosition + 1 > caffSize) {
+void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, std::vector<uint64_t>& durations, std::vector<vector<unsigned char>>& bmps) {
+	if (*readPosition + 1 > caffSize) { // TODO: overflow detection
 		throw new std::exception(); // Last block invalid
 	}
 	const unsigned char blockType = caff[(*readPosition)++];
@@ -12,12 +12,17 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 		if (safe_add(safe_add(*readPosition, 8), blocklength) > caffSize) {
 			throw new std::exception(); // Block overflows file
 		}
-		*readPosition += 8;
-		if (blocklength < 1 + 8 + 8) {
+		*readPosition += 8; // TODO: overflow detection
+		if (blocklength < 8) {
 			throw new std::exception(); // Block too short
 		}
 		const uint64_t duration = read8ByteIntLe(caff, caffSize, *readPosition);
-		*readPosition += 8;
+
+		*readPosition = safe_add(8, *readPosition);
+		const std::vector<unsigned char> bmp = ciffToBmp(&caff[*readPosition], blocklength - 8);
+		durations.push_back(duration);
+		bmps.push_back(bmp);
+		*readPosition += blocklength - 8;
 	}
 	else if (blockType == 0x2) {
 		// CAFF credits, skip
@@ -29,7 +34,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 	}
 }
 
-std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
+void processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
 	const uint64_t minFileSize = 29; // header ID (1) + header length (8) + header magic (4) + header_size (8) + num_anim (8)
 	const uint64_t expectedHeaderSize = 20; //
 	const uint64_t fileSize = caff.size();
@@ -51,8 +56,8 @@ std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& 
 		throw new std::exception(); // header_size invalid
 	}
 	const uint64_t numAnim = read8ByteIntLe(caff, 1 + 8 + 4 + 8);
-	const std::vector<uint64_t> durations;
-	const std::vector<vector<unsigned char>> bmps;
+	std::vector<uint64_t> durations;
+	std::vector<vector<unsigned char>> bmps;
 	if (numAnim != 0) {
 		uint64_t readPosition = minFileSize;
 		while (readPosition < fileSize) {
@@ -70,6 +75,8 @@ std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& 
 		std::ostringstream fileName;
 		fileName << outputDir << i << ".bmp";
 		writeToFile(bmps[i], fileName.str());
+		int a = 1;
+		a++;
 	}
 }
 
