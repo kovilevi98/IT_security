@@ -33,7 +33,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 	}
 }
 
-std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
+void processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
 	const uint64_t minFileSize = 29; // header ID (1) + header length (8) + header magic (4) + header_size (8) + num_anim (8)
 	const uint64_t expectedHeaderSize = 20; //
 	const uint64_t fileSize = caff.size();
@@ -74,6 +74,8 @@ std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& 
 		std::ostringstream fileName;
 		fileName << outputDir << i << ".bmp";
 		writeToFile(bmps[i], fileName.str());
+		int a = 1;
+		a++;
 	}
 }
 
@@ -82,7 +84,8 @@ int main() {
 		vector<unsigned char> caff = readFromFile("c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\1.caff");
 		processCaff(caff, "c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\");
 		return 0;
-	} catch (const std::exception&) {
+	}
+	catch (const std::exception&) {
 		return 1;
 	}
 }
