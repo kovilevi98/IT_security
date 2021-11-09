@@ -18,7 +18,6 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 		}
 		const uint64_t duration = read8ByteIntLe(caff, caffSize, *readPosition);
 		*readPosition += 8;
-		const std::vector<unsigned char>
 	}
 	else if (blockType == 0x2) {
 		// CAFF credits, skip
@@ -74,10 +73,10 @@ std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& 
 	}
 }
 
-int main() {
+extern int processor(std::string caffIn, std::string folderOut) {
 	try {
-		vector<unsigned char> caff = readFromFile("c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\1.caff");
-		processCaff(caff, "c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\");
+		vector<unsigned char> caff = readFromFile(caffIn);
+		processCaff(caff, folderOut);
 		return 0;
 	}
 	catch (const std::exception&) {
