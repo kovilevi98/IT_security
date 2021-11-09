@@ -73,13 +73,22 @@ std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& 
 	}
 }
 
-extern int processor(std::string caffIn, std::string folderOut) {
+extern int processor(char* caffIn, char* folderOut) {
+	
+	if (caffIn == NULL || folderOut == NULL)
+		return 1;
+
+	std::string caffStr(caffIn);
+	std::string folderStr(folderOut);
+
 	try {
-		vector<unsigned char> caff = readFromFile(caffIn);
-		processCaff(caff, folderOut);
+		vector<unsigned char> caff = readFromFile(caffStr);
+		processCaff(caff, folderStr);
 		return 0;
 	}
 	catch (const std::exception&) {
 		return 1;
 	}
 }
+
+

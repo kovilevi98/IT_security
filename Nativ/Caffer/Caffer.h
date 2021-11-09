@@ -9,7 +9,7 @@
 
 extern "C" 
 {
-	__declspec(dllexport) int __stdcall processor(std::string caffIn, std::string folderOut);
+	__declspec(dllexport) int __stdcall processor(char* caffIn, char* folderOut);
 }
 
 #endif // ndef CAFFER_H
