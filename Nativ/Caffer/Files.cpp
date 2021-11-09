@@ -1,7 +1,5 @@
 #include "Files.h"
 
-#include <fstream>
-
 std::vector<unsigned char> readFromFile(const std::string filename) {
 	// open the file:
 	std::ifstream file(filename, std::ios::binary);
@@ -32,8 +30,22 @@ std::vector<unsigned char> readFromFile(const std::string filename) {
 	return vec;
 }
 
-void writeToFile(std::vector<unsigned char>& data, const std::string filename) {
+void writeToFile(const unsigned char* data, const uint64_t length, const std::string filename) {
+	std::ofstream outfile(filename, std::ios::out | std::ios::binary);
+	outfile.write((const char*)data, length);
+}
+void writeToFile(const std::vector<unsigned char>& data, const std::string filename) {
 	std::ofstream outfile(filename, std::ios::out | std::ios::binary);
 	outfile.write((const char*)&data[0], data.size());
 }
+
+void writeMetaFile(const std::vector<uint64_t>& durations, const std::string filename) {
+	std::ofstream file;
+	file.open(filename);
+	file << durations.size() << "\n";
+	for (const uint64_t& duration : durations) {
+		file << duration << "\n";
+	}
+}
+
 

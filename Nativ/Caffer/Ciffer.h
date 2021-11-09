@@ -1,11 +1,9 @@
 #ifndef CIFFER_H
 #define CIFFER_H
 
+#include "Common.h"
 #include <vector>
 #include <string>
-
-uint64_t read8ByteIntLe(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start);
-uint64_t read8ByteIntLe(const std::vector<unsigned char>& ciff, const uint64_t start);
 
 std::string readCaption(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start, const uint64_t headerSize);
 std::string readCaption(const std::vector<unsigned char>& ciff, const uint64_t start, const uint64_t headerSize);

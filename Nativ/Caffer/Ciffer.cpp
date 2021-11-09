@@ -1,19 +1,5 @@
 #include "Ciffer.h"
 
-uint64_t read8ByteIntLe(const std::vector<unsigned char>& ciff, const uint64_t start) {
-	return read8ByteIntLe(&ciff[0], ciff.size(), start);
-}
-uint64_t read8ByteIntLe(const unsigned char* ciff, const uint64_t ciffSize, const uint64_t start) {
-	if (ciffSize < start + 8) { // TODO: overflow detection
-		throw new std::exception(); // Index out of bounds
-	}
-	uint64_t accumulator = 0;
-	for (uint64_t i = 0; i < 8; i++) { // TODO: overflow detection
-		accumulator = accumulator | (uint64_t)ciff[start + i] << (8 * i);
-	}
-	return accumulator;
-}
-
 std::string readCaption(const std::vector<unsigned char>& ciff, const uint64_t start, const uint64_t headerSize) {
 	return readCaption(&ciff[0], ciff.size(), start, headerSize);
 }
@@ -55,7 +41,7 @@ std::vector<std::string> readTags(const unsigned char* ciff, const uint64_t ciff
 }
 
 void bmpAddNumberLe(std::vector<unsigned char>& bmp, const uint64_t number, const uint64_t bytes) {
-	for (size_t i = 0; i < bytes; i++) { // TODO: overflow detection
+	for (uint64_t i = 0; i < bytes; i++) { // TODO: overflow detection
 		bmp.push_back((unsigned char)(number >> (i * 8)));
 	}
 }
@@ -104,8 +90,8 @@ std::vector<unsigned char> ciffToBmp(std::vector<unsigned char>& ciff) {
 	return ciffToBmp(&ciff[0], ciff.size());
 }
 std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t ciffSize) {
-	const size_t minFileSize = 38; // magic (4) + header_size (8) + content_size(8) + width (8) + height (8) + caption (>1) + tags (>1)
-	const size_t fileSize = ciffSize;
+	const uint64_t minFileSize = 38; // magic (4) + header_size (8) + content_size(8) + width (8) + height (8) + caption (>1) + tags (>1)
+	const uint64_t fileSize = ciffSize;
 	if (fileSize < minFileSize) {
 		throw new std::exception(); // File too short
 	}
@@ -116,17 +102,21 @@ std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t c
 	if (headerSize > fileSize) {
 		throw new std::exception(); // Header size bigger than file size
 	}
-	uint64_t contentSize = read8ByteIntLe(ciff, ciffSize, 12);
-	uint64_t width = read8ByteIntLe(ciff, ciffSize, 20);
-	uint64_t height = read8ByteIntLe(ciff, ciffSize, 28);
+	uint64_t contentSize = read8ByteIntLe(ciff, ciffSize, 4 + 8);
+	uint64_t width = read8ByteIntLe(ciff, ciffSize, 4 + 8 + 8);
+	uint64_t height = read8ByteIntLe(ciff, ciffSize, 4 + 8 + 8 + 8);
 	if (fileSize != headerSize + contentSize) { // TODO: overflow detection
 		throw new std::exception(); // Total size mismatch
 	}
 	if (contentSize != (width * height * 3)) { // TODO: overflow detection
 		throw new std::exception(); // Content size mismatch
 	}
+
+	/*
+	// Uncomment this block if you want to retrieve/validate CIFF caption and tags
 	std::string caption = readCaption(ciff, ciffSize, 36, headerSize);
 	std::vector<std::string> tags = readTags(ciff, ciffSize, 36 + (uint64_t)caption.length() + 1, headerSize); // TODO: overflow detection
+	*/
 
 	std::vector<unsigned char> bmp;
 	uint64_t bmpSize = 54 + ((width * 3 + 3) / 4) * 4 * height; // TODO: overflow detection
