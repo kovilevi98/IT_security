@@ -2,8 +2,8 @@
 
 using std::vector;
 
-void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, const std::vector<uint64_t>& durations, const std::vector<vector<unsigned char>>& bmps) {
-	if (*readPosition + 1 > caffSize) {
+void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, std::vector<uint64_t>& durations, std::vector<vector<unsigned char>>& bmps) {
+	if (*readPosition + 1 > caffSize) { // TODO: overflow detection
 		throw new std::exception(); // Last block invalid
 	}
 	const unsigned char blockType = caff[(*readPosition)++];
@@ -12,13 +12,16 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 		if (*readPosition + 8 + blocklength > caffSize) { // TODO: overflow detection
 			throw new std::exception(); // Block overflows file
 		}
-		*readPosition += 8;
-		if (blocklength < 1 + 8 + 8) {
+		*readPosition += 8; // TODO: overflow detection
+		if (blocklength < 8) {
 			throw new std::exception(); // Block too short
 		}
 		const uint64_t duration = read8ByteIntLe(caff, caffSize, *readPosition);
-		*readPosition += 8;
-		const std::vector<unsigned char>
+		*readPosition += 8; // TODO: overflow detection
+		const std::vector<unsigned char> bmp = ciffToBmp(&caff[*readPosition], blocklength - 8);
+		durations.push_back(duration);
+		bmps.push_back(bmp);
+		*readPosition += blocklength - 8;
 	}
 	else if (blockType == 0x2) {
 		// CAFF credits, skip
@@ -52,8 +55,8 @@ std::vector<std::vector<unsigned char>> processCaff(std::vector<unsigned char>& 
 		throw new std::exception(); // header_size invalid
 	}
 	const uint64_t numAnim = read8ByteIntLe(caff, 1 + 8 + 4 + 8);
-	const std::vector<uint64_t> durations;
-	const std::vector<vector<unsigned char>> bmps;
+	std::vector<uint64_t> durations;
+	std::vector<vector<unsigned char>> bmps;
 	if (numAnim != 0) {
 		uint64_t readPosition = minFileSize;
 		while (readPosition < fileSize) {
@@ -79,8 +82,7 @@ int main() {
 		vector<unsigned char> caff = readFromFile("c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\1.caff");
 		processCaff(caff, "c:\\Users\\Mark\\Desktop\\MSc\\számítógépes biztonság\\IT_security\\Nativ\\Caffer\\Debug\\");
 		return 0;
-	}
-	catch (const std::exception&) {
+	} catch (const std::exception&) {
 		return 1;
 	}
 }

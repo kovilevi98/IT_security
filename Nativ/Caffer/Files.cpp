@@ -40,8 +40,7 @@ void writeToFile(const std::vector<unsigned char>& data, const std::string filen
 }
 
 void writeMetaFile(const std::vector<uint64_t>& durations, const std::string filename) {
-	std::ofstream file;
-	file.open(filename);
+	std::ofstream file(filename);
 	file << durations.size() << "\n";
 	for (const uint64_t& duration : durations) {
 		file << duration << "\n";
