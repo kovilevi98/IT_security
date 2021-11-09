@@ -78,10 +78,10 @@ extern int processor(char* caffIn, char* folderOut) {
 	if (caffIn == NULL || folderOut == NULL)
 		return 1;
 
-	std::string caffStr(caffIn);
-	std::string folderStr(folderOut);
-
 	try {
+		std::string caffStr(caffIn);
+		std::string folderStr(folderOut);
+
 		vector<unsigned char> caff = readFromFile(caffStr);
 		processCaff(caff, folderStr);
 		return 0;
