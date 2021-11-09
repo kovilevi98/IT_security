@@ -25,6 +25,13 @@ uint64_t safe_add(uint64_t ui_a, uint64_t ui_b)
 	}
 }
 
+
+uint64_t safe_mul(uint64_t ui_a, uint64_t ui_b)
+{
+	//TODO
+	return ui_a * ui_b;
+}
+
 uint64_t safe_sub(uint64_t ui_a, uint64_t ui_b)
 {
 	uint64_t usum = ui_a + ui_b;

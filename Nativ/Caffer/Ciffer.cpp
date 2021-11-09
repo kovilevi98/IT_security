@@ -64,7 +64,7 @@ void bmpAddDibHeader(std::vector<unsigned char>& bmp, const uint64_t width, cons
 	bmpAddNumberLe(bmp, 1, 2); // Number of planes
 	bmpAddNumberLe(bmp, 24, 2); // Bits per pixel
 	bmpAddNumberLe(bmp, 0, 4); // Compression mode
-	bmpAddNumberLe(bmp, width * height * 4, 4); // Byte size of bitmap data with paddings // TODO: overflow detection
+	bmpAddNumberLe(bmp, safe_mul(safe_mul(width, height), 4), 4); // Byte size of bitmap data with paddings 
 	bmpAddNumberLe(bmp, 2835, 4); // Horizontal print resolution
 	bmpAddNumberLe(bmp, 2835, 4); // Verticel print resolution
 	bmpAddNumberLe(bmp, 0, 4); // Number of colors in color palette
@@ -75,13 +75,13 @@ void bmpAddPixelArray(std::vector<unsigned char>& bmp, const unsigned char* ciff
 	for (uint64_t i = 0; i < height; i++) {
 		uint64_t iMirrored = height - 1 - i; // BMP-s rows are stored from bottom to top
 		for (uint64_t j = 0; j < width; j++) {
-			uint64_t offset = start + (iMirrored * width + j) * 3; // TODO: overflow detection
+			uint64_t offset = safe_add(start, safe_mul((safe_add(safe_mul(iMirrored, width), j)), 3));
 			bmp.push_back(ciff[safe_add(offset, 2)]);
 			bmp.push_back(ciff[safe_add(offset, 1)]); 
 			bmp.push_back(ciff[safe_add(offset, 0)]);
 		}
 
-		uint64_t padding = (4 - (width * 3) % 4) % 4; // TODO: overflow detection
+		uint64_t padding = (safe_sub(4, (safe_mul(width, 3) % 4))) % 4; 
 		for (uint64_t j = 0; j < padding;) 
 		{
 			bmp.push_back(0x00);
@@ -109,10 +109,10 @@ std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t c
 	uint64_t contentSize = read8ByteIntLe(ciff, ciffSize, 4 + 8);
 	uint64_t width = read8ByteIntLe(ciff, ciffSize, 4 + 8 + 8);
 	uint64_t height = read8ByteIntLe(ciff, ciffSize, 4 + 8 + 8 + 8);
-	if (fileSize != headerSize + contentSize) { // TODO: overflow detection
+	if (fileSize != safe_add(headerSize, contentSize)) {
 		throw new std::exception(); // Total size mismatch
 	}
-	if (contentSize != (width * height * 3)) { // TODO: overflow detection
+	if (contentSize != (safe_mul(width, safe_mul(height, 3)))) { // TODO: overflow detection
 		throw new std::exception(); // Content size mismatch
 	}
 
@@ -123,7 +123,7 @@ std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t c
 	*/
 
 	std::vector<unsigned char> bmp;
-	uint64_t bmpSize = 54 + ((width * 3 + 3) / 4) * 4 * height; // TODO: overflow detection
+	uint64_t bmpSize = 54 + safe_mul(((safe_add(safe_mul(width, 3), 3)) / 4), safe_mul(4, height));
 	bmp.reserve(bmpSize);
 	bmpAddHeader(bmp, bmpSize);
 	bmpAddDibHeader(bmp, width, height);
