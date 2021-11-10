@@ -93,7 +93,7 @@ int processor(const char* caffIn, const char* folderOut) {
 		processCaff(caff, folderStr);
 		return 0;
 	}
-	catch (const std::exception&) {
+	catch (...) {
 		return 1;
 	}
 }
