@@ -15,33 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Caffer.cpp">
+    <ClCompile Include="..\Caffer\Files.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ciffer.cpp">
+    <ClCompile Include="..\Caffer\Caffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Files.cpp">
+    <ClCompile Include="..\Caffer\Ciffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="..\Caffer\Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ciffer.h">
+    <ClInclude Include="..\Caffer\Files.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Files.h">
+    <ClInclude Include="..\Caffer\Caffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Caffer.h">
+    <ClInclude Include="..\Caffer\Ciffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
+    <ClInclude Include="..\Caffer\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

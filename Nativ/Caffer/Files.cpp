@@ -1,8 +1,15 @@
 #include "Files.h"
 
 std::vector<unsigned char> readFromFile(const std::string filename) {
+	
+	
 	// open the file:
 	std::ifstream file(filename, std::ios::binary);
+
+	if (!file.is_open()) 
+	{
+		throw new std::exception(); // file could not be opened
+	}
 
 	// Stop eating new lines in binary mode!!!
 	file.unsetf(std::ios::skipws);
@@ -32,10 +39,22 @@ std::vector<unsigned char> readFromFile(const std::string filename) {
 
 void writeToFile(const unsigned char* data, const uint64_t length, const std::string filename) {
 	std::ofstream outfile(filename, std::ios::out | std::ios::binary);
+
+	if (!outfile.is_open())
+	{
+		throw new std::exception(); // file could not be opened
+	}
+
 	outfile.write((const char*)data, length);
 }
 void writeToFile(const std::vector<unsigned char>& data, const std::string filename) {
 	std::ofstream outfile(filename, std::ios::out | std::ios::binary);
+
+	if (!outfile.is_open())
+	{
+		throw new std::exception(); // file could not be opened
+	}
+
 	outfile.write((const char*)&data[0], data.size());
 }
 

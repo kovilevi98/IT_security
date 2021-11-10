@@ -17,4 +17,6 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 /// <param name="outputDir">Directory name for output files with traling backslash</param>
 void processCaff(std::vector<unsigned char>& caff, std::string outputDir);
 
+int processor(const char* caffIn, const char* folderOut);
+
 #endif // ndef CAFFER_H
