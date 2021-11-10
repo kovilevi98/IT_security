@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <iterator>
 
 std::vector<unsigned char> readFromFile(const std::string filename);
 

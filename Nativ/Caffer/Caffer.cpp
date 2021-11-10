@@ -1,4 +1,4 @@
-﻿#include "Caffer.h"
+#include "Caffer.h"
 
 using std::vector;
 
@@ -80,7 +80,7 @@ void processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
 	}
 }
 
-extern int processor(char* caffIn, char* folderOut) {
+int processor(const char* caffIn, const char* folderOut) {
 	
 	if (caffIn == NULL || folderOut == NULL)
 		return 1;

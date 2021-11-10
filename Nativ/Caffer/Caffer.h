@@ -7,12 +7,6 @@
 #include <vector>
 #include <sstream>
 
-extern "C" 
-{
-	__declspec(dllexport) int __stdcall processor(char* caffIn, char* folderOut);
-}
-
-
 void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, std::vector<uint64_t>& durations, std::vector<std::vector<unsigned char>>& bmps);
 
 /// <summary>Converts a CAFF byte vector to a BMP files. Throws exception on any parsing error.
@@ -22,5 +16,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 /// <param name="caff">CAFF format byte vector</param>
 /// <param name="outputDir">Directory name for output files with traling backslash</param>
 void processCaff(std::vector<unsigned char>& caff, std::string outputDir);
+
+int processor(const char* caffIn, const char* folderOut);
 
 #endif // ndef CAFFER_H
