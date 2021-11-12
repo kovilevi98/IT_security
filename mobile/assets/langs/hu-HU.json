@@ -12,5 +12,14 @@
   "know": " elfogadom",
   "forgotPass": "elfelejtett jelszó",
   "send": "Jelszó visszaállítás",
-  "logout": "Kijelentkezés"
+  "logout": "Kijelentkezés",
+  "admin": "Admin",
+  "firstName": "Keresztnév",
+  "lastName": "Vezetéknév",
+  "passConfirm": "Jelszó megerősítés",
+  "registration_mail": "Sikeres regisztráció",
+  "sucsessfull": "Siker",
+  "error": "Hiba",
+  "basic_error": "Ismeretlen hiba",
+  "loading": "Töltés"
 }

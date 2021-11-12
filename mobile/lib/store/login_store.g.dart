@@ -54,19 +54,30 @@ mixin _$LoginStore on Login, Store {
     });
   }
 
-  final _$rememberMeAtom = Atom(name: 'Login.rememberMe');
+  final _$isAdminAtom = Atom(name: 'Login.isAdmin');
 
   @override
-  bool get rememberMe {
-    _$rememberMeAtom.reportRead();
-    return super.rememberMe;
+  bool get isAdmin {
+    _$isAdminAtom.reportRead();
+    return super.isAdmin;
   }
 
   @override
-  set rememberMe(bool value) {
-    _$rememberMeAtom.reportWrite(value, super.rememberMe, () {
-      super.rememberMe = value;
+  set isAdmin(bool value) {
+    _$isAdminAtom.reportWrite(value, super.isAdmin, () {
+      super.isAdmin = value;
     });
+  }
+
+  final _$loginAsyncAction = AsyncAction('Login.login');
+
+  @override
+  Future<void> login(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context}) {
+    return _$loginAsyncAction.run(() =>
+        super.login(onSuccess: onSuccess, onError: onError, context: context));
   }
 
   @override
@@ -75,7 +86,7 @@ mixin _$LoginStore on Login, Store {
 email: ${email},
 password: ${password},
 isVisible: ${isVisible},
-rememberMe: ${rememberMe}
+isAdmin: ${isAdmin}
     ''';
   }
 }

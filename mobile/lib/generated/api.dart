@@ -92,4 +92,11 @@ class Openapi {
     }
 
 
+
+}
+
+extension ResposeIsSuccessExtension on int {
+  bool isSuccess() {
+    return this >= 200 && this < 300;
+  }
 }

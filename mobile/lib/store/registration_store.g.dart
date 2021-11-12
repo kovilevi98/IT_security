@@ -9,18 +9,33 @@ part of 'registration_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$RegistrationStore on Registration, Store {
-  final _$phoneAtom = Atom(name: 'Registration.phone');
+  final _$firstNameAtom = Atom(name: 'Registration.firstName');
 
   @override
-  String get phone {
-    _$phoneAtom.reportRead();
-    return super.phone;
+  String get firstName {
+    _$firstNameAtom.reportRead();
+    return super.firstName;
   }
 
   @override
-  set phone(String value) {
-    _$phoneAtom.reportWrite(value, super.phone, () {
-      super.phone = value;
+  set firstName(String value) {
+    _$firstNameAtom.reportWrite(value, super.firstName, () {
+      super.firstName = value;
+    });
+  }
+
+  final _$lastNameAtom = Atom(name: 'Registration.lastName');
+
+  @override
+  String get lastName {
+    _$lastNameAtom.reportRead();
+    return super.lastName;
+  }
+
+  @override
+  set lastName(String value) {
+    _$lastNameAtom.reportWrite(value, super.lastName, () {
+      super.lastName = value;
     });
   }
 
@@ -54,6 +69,21 @@ mixin _$RegistrationStore on Registration, Store {
     });
   }
 
+  final _$passConfirmAtom = Atom(name: 'Registration.passConfirm');
+
+  @override
+  String get passConfirm {
+    _$passConfirmAtom.reportRead();
+    return super.passConfirm;
+  }
+
+  @override
+  set passConfirm(String value) {
+    _$passConfirmAtom.reportWrite(value, super.passConfirm, () {
+      super.passConfirm = value;
+    });
+  }
+
   final _$isVisibleAtom = Atom(name: 'Registration.isVisible');
 
   @override
@@ -69,45 +99,26 @@ mixin _$RegistrationStore on Registration, Store {
     });
   }
 
-  final _$confirmAtom = Atom(name: 'Registration.confirm');
+  final _$registrationAsyncAction = AsyncAction('Registration.registration');
 
   @override
-  bool get confirm {
-    _$confirmAtom.reportRead();
-    return super.confirm;
-  }
-
-  @override
-  set confirm(bool value) {
-    _$confirmAtom.reportWrite(value, super.confirm, () {
-      super.confirm = value;
-    });
-  }
-
-  final _$subscriptionAtom = Atom(name: 'Registration.subscription');
-
-  @override
-  bool get subscription {
-    _$subscriptionAtom.reportRead();
-    return super.subscription;
-  }
-
-  @override
-  set subscription(bool value) {
-    _$subscriptionAtom.reportWrite(value, super.subscription, () {
-      super.subscription = value;
-    });
+  Future<void> registration(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context}) {
+    return _$registrationAsyncAction.run(() => super.registration(
+        onSuccess: onSuccess, onError: onError, context: context));
   }
 
   @override
   String toString() {
     return '''
-phone: ${phone},
+firstName: ${firstName},
+lastName: ${lastName},
 email: ${email},
 pass: ${pass},
-isVisible: ${isVisible},
-confirm: ${confirm},
-subscription: ${subscription}
+passConfirm: ${passConfirm},
+isVisible: ${isVisible}
     ''';
   }
 }

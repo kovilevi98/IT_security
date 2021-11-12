@@ -101,7 +101,7 @@ class ThemeConfig {
       ),
       checkboxTheme: CheckboxThemeData(
         checkColor: MaterialStateProperty.all<Color>(Global.white),
-        fillColor: MaterialStateProperty.all<Color>(Global.green),
+        fillColor: MaterialStateProperty.all<Color>(Global.blue),
       ),
       fontFamily: 'Roboto',
       textTheme: TextTheme(

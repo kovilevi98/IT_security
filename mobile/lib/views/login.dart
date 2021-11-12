@@ -4,8 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mobile/global/global.dart';
 import 'package:mobile/store/login_store.dart';
+import 'package:mobile/views/main_view.dart';
 import 'package:mobile/views/registration_view.dart';
+import 'package:mobile/widget/alertdialog.dart';
 import 'package:mobile/widget/background.dart';
+import 'package:mobile/widget/tile_container_widget.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -26,123 +29,170 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
           body: Stack(children: [
-            BackgroundWidget(),
-            Center(
-              child: SingleChildScrollView(
-                child: Observer(
-                  builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: 32.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 1.w),
-                          child: Image.asset(
-                            Global.logo2Path,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        SizedBox(height: 50.0.h),
-                        TextFormField(
-                          textInputAction: TextInputAction.next,
-                          controller: emailTextFieldController,
-                          onChanged: (_) =>
+        BackgroundWidget(),
+        Center(
+          child: SingleChildScrollView(
+            child: Observer(
+              builder: (_) => Container(
+                padding: EdgeInsets.symmetric(horizontal: 32.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 1.w),
+                      child: Image.asset(
+                        Global.logo2Path,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    SizedBox(height: 50.0.h),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: emailTextFieldController,
+                      onChanged: (_) =>
                           _store.email = emailTextFieldController.text,
+                      textAlignVertical: TextAlignVertical.center,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(Global.inputRadius.r),
+                          borderSide:
+                              BorderSide(color: Global.whiteWithOpacity),
+                        ),
+                        hintText: tr('email'),
+                        prefixIcon: const Icon(
+                          Icons.mail_outline,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.0.h),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        TextFormField(
+                          textInputAction: TextInputAction.done,
+                          controller: passTextFieldController,
+                          onChanged: (_) =>
+                              _store.password = passTextFieldController.text,
+                          obscureText: !_store.isVisible,
                           textAlignVertical: TextAlignVertical.center,
-                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(Global.inputRadius.r),
-                              borderSide: BorderSide(color: Global.whiteWithOpacity),
+                              borderRadius:
+                                  BorderRadius.circular(Global.inputRadius.r),
+                              borderSide:
+                                  BorderSide(color: Global.whiteWithOpacity),
                             ),
-                            hintText: tr('email'),
+                            hintText: tr('password'),
                             prefixIcon: const Icon(
-                              Icons.mail_outline,
+                              Icons.lock_outline,
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                _store.isVisible = !_store.isVisible;
+                              },
+                              child: Icon(
+                                (_store.isVisible)
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 20.0.h),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            TextFormField(
-                              textInputAction: TextInputAction.done,
-                              controller: passTextFieldController,
-                              onChanged: (_) =>
-                              _store.password = passTextFieldController.text,
-                              obscureText: !_store.isVisible,
-                              textAlignVertical: TextAlignVertical.center,
-                              decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(Global.inputRadius.r),
-                                  borderSide: BorderSide(color: Global.whiteWithOpacity),
-                                ),
-                                hintText: tr('password'),
-                                prefixIcon: const Icon(
-                                  Icons.lock_outline,
-                                ),
-                                suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    _store.isVisible = !_store.isVisible;
-                                  },
-                                  child: Icon(
-                                    (_store.isVisible)
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.0.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                 /* Navigator.pushReplacement<dynamic, dynamic>(
-                                    context,
-                                    PageRouteBuilder<dynamic>(
-                                      pageBuilder: (_, __, ___) => const MainView(),
-                                      transitionDuration:
-                                      Duration(milliseconds: 600),
-                                    ),
-                                  );*/
+                      ],
+                    ),
+                    SizedBox(height: 15.0.h),
+                    Row(
+                      children: [
+                        TileContainerWidget(child:
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 2.0.h, 20.0.h, 2.0.h),
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: _store.isAdmin,
+                                onChanged: (_) {
+                                  _store.isAdmin = !_store.isAdmin;
                                 },
+                              ),
+                              Expanded(
                                 child: Text(
-                                  tr('signIn'),
-                                  textAlign: TextAlign.center,
+                                  tr("admin"),
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    fontSize: 14.sp,),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        SizedBox(height: 15.0.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.0.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushReplacement<dynamic, dynamic>(
+                                context,
+                                PageRouteBuilder<dynamic>(
+                                  pageBuilder: (_, __, ___) => const MainView(),
+                                  transitionDuration:
+                                      Duration(milliseconds: 600),
+                                ),
+                              );
+                              /*_store.login(
+                                onSuccess: () async {
                                   Navigator.push<dynamic>(
                                     context,
                                     PageRouteBuilder<dynamic>(
                                       pageBuilder: (_, __, ___) =>
-                                          RegistrationView(),
+                                          const MainView(),
                                       transitionDuration:
-                                      Duration(milliseconds: 600),
+                                          const Duration(milliseconds: 600),
                                     ),
                                   );
                                 },
-                                child: Text(
-                                  tr("registration"),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                                onError: (String message) => showAlertDialog(
+                                    context, tr('error'), message),
+                                context: context,
+                              );*/
+                            },
+                            child: Text(
+                              tr('signIn'),
+                              textAlign: TextAlign.center,
                             ),
-                            /*SizedBox(
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.0.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push<dynamic>(
+                                context,
+                                PageRouteBuilder<dynamic>(
+                                  pageBuilder: (_, __, ___) =>
+                                      RegistrationView(),
+                                  transitionDuration:
+                                      Duration(milliseconds: 600),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              tr("registration"),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        /*SizedBox(
                               width: 10.w,
                             ),
                             Expanded(
@@ -161,17 +211,16 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 ),
                               ),
                             ),*/
-                          ],
-                        ),
-                        SizedBox(height: 15.0.h),
                       ],
                     ),
-                  ),
+                    SizedBox(height: 15.0.h),
+                  ],
                 ),
               ),
             ),
-          ])),
+          ),
+        ),
+      ])),
     );
   }
 }
-
