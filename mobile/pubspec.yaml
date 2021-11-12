@@ -35,6 +35,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   animated_splash_screen: ^1.1.0
   cupertino_icons: ^1.0.2
+  logger: ^1.1.0
+  font_awesome_flutter: ^9.1.0
   easy_localization: ^3.0.0
   flutter_screenutil: ^5.0.0+2
   rflutter_alert: ^2.0.4

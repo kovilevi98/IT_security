@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/global/global.dart';
 import 'package:mobile/store/registration_store.dart';
+import 'package:mobile/widget/alertdialog.dart';
 import 'package:mobile/widget/background.dart';
+import 'package:mobile/widget/progress_dialog_widget.dart';
+
+import 'login.dart';
 
 class RegistrationView extends StatefulWidget {
   @override
@@ -18,7 +23,9 @@ class _RegistrationViewState extends State<RegistrationView> {
 
   TextEditingController emailTextFieldController = TextEditingController();
   TextEditingController passTextFieldController = TextEditingController();
-  TextEditingController phoneTextFieldController = TextEditingController();
+  TextEditingController passConfirmFieldController = TextEditingController();
+  TextEditingController lastNameTextFieldController = TextEditingController();
+  TextEditingController firstNameTextFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +84,50 @@ class _RegistrationViewState extends State<RegistrationView> {
                               fit: BoxFit.fill,
                             ),
                           ),
-                          SizedBox(height: 50.0.h),
+                          SizedBox(height: 30.0.h),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: firstNameTextFieldController,
+                            onChanged: (_) =>
+                                _store.firstName = firstNameTextFieldController.text,
+                            textAlignVertical: TextAlignVertical.center,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(Global.inputRadius.r),
+                                borderSide: BorderSide(color: Global.whiteWithOpacity),
+                              ),
+                              hintText: tr('firstName'),
+                              prefixIcon: const Icon(
+                                FontAwesomeIcons.userAlt
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20.0.h),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: lastNameTextFieldController,
+                            onChanged: (_) =>
+                                _store.lastName = lastNameTextFieldController.text,
+                            textAlignVertical: TextAlignVertical.center,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(Global.inputRadius.r),
+                                borderSide: BorderSide(color: Global.whiteWithOpacity),
+                              ),
+                              hintText: tr('lastName'),
+                              prefixIcon: const Icon(
+                                  FontAwesomeIcons.userAlt
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20.0.h),
                           TextFormField(
                             textInputAction: TextInputAction.next,
                             controller: emailTextFieldController,
                             onChanged: (_) =>
-                                _store.email = emailTextFieldController.text,
+                            _store.email = emailTextFieldController.text,
                             textAlignVertical: TextAlignVertical.center,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
@@ -128,31 +173,40 @@ class _RegistrationViewState extends State<RegistrationView> {
                           ),
                           SizedBox(height: 20.0.h),
                           TextFormField(
-                            textInputAction: TextInputAction.done,
-                            controller: phoneTextFieldController,
+                            textInputAction: TextInputAction.next,
+                            controller: passConfirmFieldController,
                             onChanged: (_) =>
-                                _store.phone = phoneTextFieldController.text,
+                            _store.passConfirm = passConfirmFieldController.text,
                             textAlignVertical: TextAlignVertical.center,
+                            keyboardType: TextInputType.visiblePassword,
                             obscureText: !_store.isVisible,
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(Global.inputRadius.r),
                                 borderSide: BorderSide(color: Global.whiteWithOpacity),
                               ),
-                              hintText: tr('phone'),
+                              hintText: tr('passConfirm'),
                               prefixIcon: const Icon(
-                                Icons.phone,
+                                Icons.lock_outline,
+                              ),
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  _store.isVisible = !_store.isVisible;
+                                },
+                                child: Icon(
+                                  (_store.isVisible)
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 15.0.h),
+                          SizedBox(height: 20.0.h),
                           Row(
                             children: [
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    /*
-                                        if (_store.confirm) {
                                           showDialog<void>(context: context,
                                               builder: (_) =>
                                                   ProgressDialog(
@@ -180,12 +234,8 @@ class _RegistrationViewState extends State<RegistrationView> {
                                                   context, tr('error'),
                                                   message);
                                               //Navigator.of(context).pop();
-                                            },);
-                                        } else {
-                                          showAlertDialog(context, tr('error'),
-                                              tr('confirmError'));
-                                        }
-                                      */
+                                            }, context: context,);
+
                                   },
                                   child: Text(
                                     tr('registration'),
