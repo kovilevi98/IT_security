@@ -1,7 +1,7 @@
 {
   "email": "Email",
   "password": "Jelszó",
-  "signIn": "Belépés emaillel",
+  "signIn": "Belépés",
   "registration": "Regisztráció",
   "forgotPassword": "Elfelejtett Jelszó",
   "login": "Belépés",
