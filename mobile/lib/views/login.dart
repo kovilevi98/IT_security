@@ -106,6 +106,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     SizedBox(height: 15.0.h),
                     Row(
                       children: [
+                        SizedBox(width: 180.w,),
                         TileContainerWidget(child:
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 2.0.h, 20.0.h, 2.0.h),
