@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/global/global.dart';
+import 'package:mobile/views/gif_details_view.dart';
 
 class CaffWidget extends StatelessWidget {
   final bool deletable;
@@ -14,15 +15,15 @@ class CaffWidget extends StatelessWidget {
       child: Card(
         child: GestureDetector(
           onTap: (){
-            /*Navigator.push<dynamic>(
+            Navigator.push<dynamic>(
               context,
               PageRouteBuilder<dynamic>(
                 pageBuilder: (_, __, ___) =>
-                    CouponDetailsView(mainStore: mainStore),
+                    GifDetailsView(),
                 transitionDuration:
                 Duration(milliseconds: 600),
               ),
-            );*/
+            );
           },
           child: Column(
             children: [
