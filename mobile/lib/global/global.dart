@@ -19,6 +19,7 @@ class Global {
   static const String splashPath = 'assets/images/logo.jpg';
   static const String logoPath = 'assets/images/logo.jpg';
   static const String logo2Path = 'assets/images/logo.jpg';
+  static const String testGif = 'https://thumbs.gfycat.com/PhonyHoarseFish-small.gif';
   //static const String testPark = 'assets/images/testPark.jpg';
 
 
