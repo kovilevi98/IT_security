@@ -21,5 +21,9 @@
   "sucsessfull": "Siker",
   "error": "Hiba",
   "basic_error": "Ismeretlen hiba",
-  "loading": "Töltés"
+  "loading": "Töltés",
+  "upload": "Feltöltés",
+  "chooseFile": "Fájl választás",
+  "name": "Név",
+  "search": "Keresés"
 }

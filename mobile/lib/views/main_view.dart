@@ -3,9 +3,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/global/global.dart';
 import 'package:mobile/store/main_store.dart';
+import 'package:mobile/views/upload_file_view.dart';
 import 'package:mobile/widget/background.dart';
 import 'package:mobile/widget/caff_item_widget.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -45,7 +45,7 @@ class _MainViewState extends State<MainView> {
                       width: 60.w,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push<dynamic>(
+                          Navigator.pushReplacement<dynamic, dynamic>(
                               context,
                               PageRouteBuilder<dynamic>(
                                 pageBuilder: (_, __, ___) => const Login(),
@@ -74,7 +74,15 @@ class _MainViewState extends State<MainView> {
                     child: Container(
                       width: 60.w,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push<dynamic>(
+                              context,
+                              PageRouteBuilder<dynamic>(
+                                pageBuilder: (_, __, ___) => const UploadFileView(),
+                                transitionDuration:
+                                const Duration(milliseconds: 600),
+                              ));
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
