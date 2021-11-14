@@ -9,8 +9,8 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["IT_security_backend/IT_security_api.csproj", "IT_security_backend/"]
 COPY ["IT_security_bll/IT_security_bll.csproj", "IT_security_bll/"]
-COPY ["IT_security_dal/IT_security_dal.csproj", "IT_security_dal/"]
 COPY ["IT_security_common/IT_security_common.csproj", "IT_security_common/"]
+COPY ["IT_security_dal/IT_security_dal.csproj", "IT_security_dal/"]
 RUN dotnet restore "IT_security_backend/IT_security_api.csproj"
 COPY . .
 WORKDIR "/src/IT_security_backend"

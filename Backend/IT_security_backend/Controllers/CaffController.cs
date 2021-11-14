@@ -1,65 +1,73 @@
 ﻿using IT_security_bll.Dto.Caff;
 using IT_security_bll.Dto.Comment;
 using IT_security_bll.Helper.Pagination;
+using IT_security_bll.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace IT_security_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CaffController : BaseController
     {
-        [HttpPost("upload")]
-        [RequestSizeLimit(4_000_000)]
-        public async Task<CaffDto> Upload([FromForm] IFormFile caffFile)
+        private readonly ICaffService _caffService;
+
+        public CaffController(ICaffService caffService)
         {
-            throw new NotImplementedException();
+            _caffService = caffService;
         }
+
+        [HttpPost("upload")]
+        public Task<CaffDto> Upload([FromForm] IFormFile caffFile)
+            => _caffService.Upload(caffFile);
 
         [HttpGet]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<PageResponse<CaffDto>> Search([FromQuery] PageRequest pageRequest, [FromQuery] CaffFilter caffFilter)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<PageResponse<CaffDto>> Search([FromQuery] PageRequest pageRequest, [FromQuery] CaffFilter caffFilter)
+            => _caffService.Search(pageRequest, caffFilter);
 
         [HttpGet("{caffId}")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<CaffDto> Get([FromRoute] int caffId)
+        public Task<CaffDto> Get([FromRoute] int caffId)
+            => _caffService.Get(caffId);
+
+        [HttpGet("{caffId}/download")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<FileContentResult> Download([FromRoute] int caffId)
         {
-            throw new NotImplementedException();
+            var downloadInfo = await _caffService.Download(caffId);
+
+            return new FileContentResult(downloadInfo.FileContent, "application/octet-stream")
+            {
+                FileDownloadName = downloadInfo.FileName
+            };
         }
 
         [HttpDelete("{caffId}")]
+        [Authorize(Roles ="Admin")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete([FromRoute] int caffId)
-        {
-            throw new NotImplementedException();
-        }
+        public Task Delete([FromRoute] int caffId)
+            => _caffService.Delete(caffId);
 
         [HttpGet("{caffId}/comment")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<PageResponse<CommentDto>> GetComments([FromRoute] int caffId, [FromQuery] PageRequest pageRequest)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<PageResponse<CommentDto>> GetComments([FromRoute] int caffId, [FromQuery] PageRequest pageRequest)
+            => _caffService.GetComments(caffId, pageRequest);
 
         [HttpPost("{caffId}/comment")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<CommentDto> AddComment([FromRoute] int caffId, [FromBody] AddCommentDto comment)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<CommentDto> AddComment([FromRoute] int caffId, [FromBody] AddCommentDto comment)
+            => _caffService.AddComment(caffId, comment);
 
         [HttpDelete("{caffId}/comment/{commentId}/delete")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComment([FromRoute] int caffId, [FromRoute] int commentId)
-        {
-            throw new NotImplementedException();
-        }
+        public Task DeleteComment([FromRoute] int caffId, [FromRoute] int commentId)
+            => _caffService.DeleteComment(caffId, commentId);
     }
 }

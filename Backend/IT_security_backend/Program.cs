@@ -1,19 +1,31 @@
+using IT_security_bll.Services;
+using IT_security_dal.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IT_security_backend
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ITSecurityDbContext>();
+                var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+
+                //context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                await seedService.SeedRoles();
+                await seedService.SeedUsers();
+            }
+
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -1,22 +1,19 @@
-using Hellang.Middleware.ProblemDetails;
-using IT_security_common.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 using IT_security_api.ErrorHandling;
+using Microsoft.IdentityModel.Tokens;
+using IT_security_bll.Extensions;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using IT_security_bll.Interfaces;
+using IT_security_bll.Services;
+using IT_security_bll.Mapping;
+using IT_security_dal.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace IT_security_backend
 {
@@ -48,6 +45,66 @@ namespace IT_security_backend
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IT_security_backend", Version = "v1" });
             });
+
+            services.ConfigureDatabase(_configuration);
+
+            var builder = services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                // Production requirements
+                options.Password = new PasswordOptions()
+                {
+                    RequiredLength = 8,
+                    RequireDigit = true,
+                    RequireLowercase = true,
+                    RequireNonAlphanumeric = true,
+                    RequireUppercase = true
+                };
+
+                options.SignIn.RequireConfirmedEmail = true;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<ITSecurityDbContext>()
+            .AddDefaultTokenProviders();
+
+            var secret = _configuration.GetSection("TokenOptions:Secret").Value;
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            services
+                .AddAuthentication(opt =>
+                {
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+                });
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<IRequestContext, HttpRequestContext>();
+
+
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddCors(o => o.AddPolicy("LocalCors", builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            }));
+
+            services.AddTransient<SeedService>();
+
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICaffService, CaffService>();
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,8 +119,13 @@ namespace IT_security_backend
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
+            app.UseCors("LocalCors");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

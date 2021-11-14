@@ -14,6 +14,6 @@ namespace IT_security_bll.Dto.Comment
 
         public string CommentedBy { get; set; }
 
-        public int CommentedByUserId { get; set; }
+        public string CommentedByUserId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using IT_security_bll.Helper.Pagination;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +28,15 @@ namespace IT_security_bll.Extensions
             }
         }
 
-        //public static async Task<PageResponse<TSource>> ToPagedListAsync<TSource>(
-        //    this IQueryable<TSource> source, PageRequest pageRequest, CancellationToken cancellationToken = default)
-        //{
-        //    var totalCount = await source.CountAsync(cancellationToken);
+        public static async Task<PageResponse<TSource>> ToPagedListAsync<TSource>(
+            this IQueryable<TSource> source, PageRequest pageRequest, CancellationToken cancellationToken = default)
+        {
+            var totalCount = await source.CountAsync(cancellationToken);
 
-        //    return new PageResponse<TSource>(
-        //        await source.Skip(pageRequest.Page * pageRequest.PageSize).Take(pageRequest.PageSize).ToListAsync(cancellationToken), pageRequest.Page, totalCount);
-        //}
+            return new PageResponse<TSource>(
+                await source.Skip((pageRequest.Page-1) * pageRequest.PageSize)
+                            .Take(pageRequest.PageSize)
+                            .ToListAsync(cancellationToken), pageRequest.Page, totalCount);
+        }
     }
 }
