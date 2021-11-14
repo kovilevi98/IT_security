@@ -14,6 +14,7 @@ using IT_security_bll.Services;
 using IT_security_bll.Mapping;
 using IT_security_dal.Models;
 using Microsoft.AspNetCore.Identity;
+using Hellang.Middleware.ProblemDetails;
 
 namespace IT_security_backend
 {
@@ -112,10 +113,12 @@ namespace IT_security_backend
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IT_security_backend v1"));
             }
+
+            app.UseProblemDetails();
 
             app.UseHttpsRedirection();
 

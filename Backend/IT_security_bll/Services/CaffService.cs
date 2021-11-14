@@ -54,64 +54,76 @@ namespace IT_security_bll.Services
             var resultLocation = Path.Combine(uploadLocation, "Upload", "Ciff", randomname) + "\\";
             Directory.CreateDirectory(resultLocation);
 
-            var result = processor(caffUploadPath, resultLocation);
-            if (result != 0)
-                throw new BusinessException("Invalid caff file");
-
-            var finalDirectory = Path.Combine(uploadLocation, "wwwroot", randomname);
-
-            Directory.CreateDirectory(finalDirectory);
-            var gifLocation = Path.Combine(finalDirectory, $"{filename}.gif");
-            var caffPath = Path.Combine(finalDirectory, $"{filename}.caff");
-            File.Copy(caffUploadPath, caffPath);
-
-            // Delete uploaded caff
-            File.Delete(caffUploadPath);
-
-            var metafilePath = resultLocation + "meta.txt";
-            string[] lines = File.ReadAllLines(metafilePath);
-            var imageCount = int.Parse(lines[0]);
-            var listImageDisplayLengths = new List<int>();
-
-            for (int i = 0; i < imageCount; i++)
+            int timeout = 30_000;
+            var task = Task.Run(() => processor(caffUploadPath, resultLocation));
+            var completedTask = await Task.WhenAny(task, Task.Delay(timeout));
+            if (completedTask == task)
             {
-                listImageDisplayLengths.Add(int.Parse(lines[i + 1]));
-            }
+                var result = task.Result;
+                if (result != 0)
+                    throw new BusinessException("Invalid caff file");
 
-            using (var gifCreator = new AnimatedGifCreator(gifLocation))
-            {
+                var finalDirectory = Path.Combine(uploadLocation, "wwwroot", randomname);
+
+                Directory.CreateDirectory(finalDirectory);
+                var gifLocation = Path.Combine(finalDirectory, $"{filename}.gif");
+                var caffPath = Path.Combine(finalDirectory, $"{filename}.caff");
+                File.Copy(caffUploadPath, caffPath);
+
+                // Delete uploaded caff
+                File.Delete(caffUploadPath);
+
+                var metafilePath = resultLocation + "meta.txt";
+                string[] lines = File.ReadAllLines(metafilePath);
+                var imageCount = int.Parse(lines[0]);
+                var listImageDisplayLengths = new List<int>();
+
                 for (int i = 0; i < imageCount; i++)
                 {
-                    var imagePath = Path.Combine(resultLocation, $"{i}.bmp");
-                    var img = Image.FromFile(imagePath);
-                    var displayLength = listImageDisplayLengths[i];
-                    gifCreator.AddFrame(img, delay: displayLength, quality: GifQuality.Default);
+                    listImageDisplayLengths.Add(int.Parse(lines[i + 1]));
                 }
+
+                using (var gifCreator = new AnimatedGifCreator(gifLocation))
+                {
+                    for (int i = 0; i < imageCount; i++)
+                    {
+                        var imagePath = Path.Combine(resultLocation, $"{i}.bmp");
+                        using (var img = Image.FromFile(imagePath))
+                        {
+                            var displayLength = listImageDisplayLengths[i];
+                            gifCreator.AddFrame(img, delay: displayLength, quality: GifQuality.Default);
+                        }
+                    }
+                }
+
+                // Delete generated ciff
+                var di = new DirectoryInfo(resultLocation);
+                foreach (FileInfo file in di.GetFiles()) file.Delete();
+                foreach (DirectoryInfo subDirectory in di.GetDirectories()) subDirectory.Delete(true);
+
+                var caff = new Caff
+                {
+                    GeneratedName = randomname,
+                    CaffName = filename,
+                    UploadedDate = DateTime.Now,
+                    UploadedByUserId = _requestContext.ApplicationUserId,
+                    GifUrl = $"{randomname}/{filename}.gif",
+                    CaffUrl = $"{randomname}/{filename}.caff"
+                };
+
+                _dbContext.Caffs.Add(caff);
+                await _dbContext.SaveChangesAsync();
+
+                var caffFromDb = await _dbContext.Caffs
+                    .Include(c => c.UploadedByUser)
+                    .SingleAsync(c => c.CaffId == caff.CaffId);
+
+                return _mapper.Map<CaffDto>(caffFromDb);
             }
-
-            //// Delete generated ciff
-            //var di = new DirectoryInfo(resultLocation);
-            //foreach (FileInfo file in di.GetFiles()) file.Delete();
-            //foreach (DirectoryInfo subDirectory in di.GetDirectories()) subDirectory.Delete(true);
-
-            var caff = new Caff
+            else
             {
-                GeneratedName = randomname,
-                CaffName = filename,
-                UploadedDate = DateTime.Now,
-                UploadedByUserId = _requestContext.ApplicationUserId,
-                GifUrl = $"{randomname}/{filename}.gif",
-                CaffUrl = $"{randomname}/{filename}.caff"
-            };
-
-            _dbContext.Caffs.Add(caff);
-            await _dbContext.SaveChangesAsync();
-
-            var caffFromDb = await _dbContext.Caffs
-                .Include(c => c.UploadedByUser)
-                .SingleAsync(c => c.CaffId == caff.CaffId);
-
-            return _mapper.Map<CaffDto>(caffFromDb);
+                throw new BusinessException("Caff parsing reached timeout, try again later");
+            }
         }
 
         public async Task<DownloadInfoDto> Download(int caffId)

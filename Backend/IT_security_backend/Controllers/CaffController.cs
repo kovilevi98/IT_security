@@ -22,6 +22,7 @@ namespace IT_security_api.Controllers
         }
 
         [HttpPost("upload")]
+        [RequestSizeLimit(10_000_000)]
         public Task<CaffDto> Upload([FromForm] IFormFile caffFile)
             => _caffService.Upload(caffFile);
 
