@@ -6,8 +6,23 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
     ports:
-      - "80"
-      - "443"
+      - "5000:80"
+      - "5001:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  it_security_db:  
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: it_security_db
+    environment:  
+      ACCEPT_EULA: 'Y'  
+      SA_PASSWORD: "B6LPcEnxE492E5teYR8qgfqzZUdSV26a"
+    volumes:
+      - sqlData:/var/opt/mssql
+    ports:  
+      - '5010:1433'
+
+volumes:
+  sqlData:
+    external: false
