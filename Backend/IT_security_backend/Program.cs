@@ -18,7 +18,7 @@ namespace IT_security_backend
                 var context = scope.ServiceProvider.GetRequiredService<ITSecurityDbContext>();
                 var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
 
-                //context.Database.EnsureDeleted();
+                context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
                 await seedService.SeedRoles();
