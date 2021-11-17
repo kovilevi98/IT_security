@@ -24,6 +24,17 @@ mixin _$MainStore on _MainStoreStore, Store {
     });
   }
 
+  final _$getDataAsyncAction = AsyncAction('_MainStoreStore.getData');
+
+  @override
+  Future<void> getData(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context}) {
+    return _$getDataAsyncAction.run(() => super
+        .getData(onSuccess: onSuccess, onError: onError, context: context));
+  }
+
   @override
   String toString() {
     return '''

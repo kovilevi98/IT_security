@@ -30,7 +30,7 @@ abstract class Upload with Store {
     required BuildContext context,
   }) async {
     var uri = Uri.parse(
-        "http://win.milcomp.hu/api/set-cover");
+        "http://192.168.0.138:5000/api/Caff/upload");
 
     bool result = false;
     String errorMessage = tr("photoError");
@@ -55,7 +55,7 @@ abstract class Upload with Store {
           //String type = mimeType.split('/')[1];
           request.files.add(
             await http.MultipartFile.fromPath(
-              'file',
+              'caffFile',
               file!.path,
               contentType: new MediaType('application', 'caff'),
             ),
