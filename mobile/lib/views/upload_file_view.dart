@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/global/global.dart';
 import 'package:mobile/store/upload_store.dart';
+import 'package:mobile/widget/alertdialog.dart';
 import 'package:mobile/widget/background.dart';
 import 'package:mobile/widget/file_widget.dart';
 
@@ -133,8 +134,16 @@ class _UploadFileViewState extends State<UploadFileView> {
                                     children: [
                                     Expanded(
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          //_uploadFile();
+                                        onPressed: () async {
+                                          await store.uploadData(
+                                            onSuccess: () {
+                                              Navigator.of(context, rootNavigator: true).pop();
+                                            },
+                                            onError: (String message) {
+                                              Navigator.of(context, rootNavigator: true).pop();
+                                              showAlertDialogAsync(context, tr('error'), message);
+                                            },
+                                            context: context,);
                                         },
                                         child: Text(
                                           tr('upload'),

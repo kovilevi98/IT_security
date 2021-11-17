@@ -41,6 +41,17 @@ mixin _$CreateStore on Create, Store {
     });
   }
 
+  final _$uploadDataAsyncAction = AsyncAction('Create.uploadData');
+
+  @override
+  Future<bool> uploadData(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context}) {
+    return _$uploadDataAsyncAction.run(() => super
+        .uploadData(onSuccess: onSuccess, onError: onError, context: context));
+  }
+
   @override
   String toString() {
     return '''
