@@ -35,6 +35,79 @@ mixin _$MainStore on _MainStoreStore, Store {
         .getData(onSuccess: onSuccess, onError: onError, context: context));
   }
 
+  final _$getByIdAsyncAction = AsyncAction('_MainStoreStore.getById');
+
+  @override
+  Future<void> getById(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context,
+      required int id}) {
+    return _$getByIdAsyncAction.run(() => super.getById(
+        onSuccess: onSuccess, onError: onError, context: context, id: id));
+  }
+
+  final _$deleteByIdAsyncAction = AsyncAction('_MainStoreStore.deleteById');
+
+  @override
+  Future<void> deleteById(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context,
+      required int id}) {
+    return _$deleteByIdAsyncAction.run(() => super.deleteById(
+        onSuccess: onSuccess, onError: onError, context: context, id: id));
+  }
+
+  final _$getCommentsByIdAsyncAction =
+      AsyncAction('_MainStoreStore.getCommentsById');
+
+  @override
+  Future<void> getCommentsById(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context,
+      required int id}) {
+    return _$getCommentsByIdAsyncAction.run(() => super.getCommentsById(
+        onSuccess: onSuccess, onError: onError, context: context, id: id));
+  }
+
+  final _$uploadCommentAsyncAction =
+      AsyncAction('_MainStoreStore.uploadComment');
+
+  @override
+  Future<void> uploadComment(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context,
+      required int id,
+      required int id2}) {
+    return _$uploadCommentAsyncAction.run(() => super.uploadComment(
+        onSuccess: onSuccess,
+        onError: onError,
+        context: context,
+        id: id,
+        id2: id2));
+  }
+
+  final _$deleteCommentAsyncAction =
+      AsyncAction('_MainStoreStore.deleteComment');
+
+  @override
+  Future<void> deleteComment(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context,
+      required int id,
+      required int id2}) {
+    return _$deleteCommentAsyncAction.run(() => super.deleteComment(
+        onSuccess: onSuccess,
+        onError: onError,
+        context: context,
+        id: id,
+        id2: id2));
+  }
+
   @override
   String toString() {
     return '''
