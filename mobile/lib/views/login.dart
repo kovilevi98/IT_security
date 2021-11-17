@@ -137,30 +137,41 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.pushReplacement<dynamic, dynamic>(
-                                context,
-                                PageRouteBuilder<dynamic>(
-                                  pageBuilder: (_, __, ___) => const MainView(),
-                                  transitionDuration:
-                                      Duration(milliseconds: 600),
-                                ),
-                              );
-                              /*_store.login(
-                                onSuccess: () async {
-                                  Navigator.push<dynamic>(
-                                    context,
-                                    PageRouteBuilder<dynamic>(
-                                      pageBuilder: (_, __, ___) =>
-                                          const MainView(),
-                                      transitionDuration:
-                                          const Duration(milliseconds: 600),
-                                    ),
-                                  );
-                                },
-                                onError: (String message) => showAlertDialog(
-                                    context, tr('error'), message),
-                                context: context,
-                              );*/
+                             if(_store.isAdmin){
+                               _store.adminLogin(
+                                 onSuccess: () async {
+                                   Navigator.push<dynamic>(
+                                     context,
+                                     PageRouteBuilder<dynamic>(
+                                       pageBuilder: (_, __, ___) =>
+                                       const MainView(),
+                                       transitionDuration:
+                                       const Duration(milliseconds: 600),
+                                     ),
+                                   );
+                                 },
+                                 onError: (String message) => showAlertDialog(
+                                     context, tr('error'), message),
+                                 context: context,
+                               );
+                             } else {
+                               _store.login(
+                                 onSuccess: () async {
+                                   Navigator.push<dynamic>(
+                                     context,
+                                     PageRouteBuilder<dynamic>(
+                                       pageBuilder: (_, __, ___) =>
+                                       const MainView(),
+                                       transitionDuration:
+                                       const Duration(milliseconds: 600),
+                                     ),
+                                   );
+                                 },
+                                 onError: (String message) => showAlertDialog(
+                                     context, tr('error'), message),
+                                 context: context,
+                               );
+                             }
                             },
                             child: Text(
                               tr('signIn'),
