@@ -24,7 +24,8 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
-    <Folder Include="NewFolder\" />
+    <Folder Include="Upload\Ciff" />
+    <Folder Include="Upload\Caff" />
   </ItemGroup>
 
 </Project>
