@@ -42,7 +42,7 @@ class FileWidget extends StatelessWidget {
               child: Builder(builder: (_) {
                 return GestureDetector(
                   onTap: () {
-                    //store.file = null;
+                    store.file = null;
                   },
                   child: Icon(FontAwesomeIcons.times,
                       size: 18.r, color: Colors.black),

@@ -9,6 +9,7 @@ import 'package:mobile/views/main_view.dart';
 import 'package:mobile/views/registration_view.dart';
 import 'package:mobile/widget/alertdialog.dart';
 import 'package:mobile/widget/background.dart';
+import 'package:mobile/widget/progress_dialog_widget.dart';
 import 'package:mobile/widget/tile_container_widget.dart';
 
 class Login extends StatefulWidget {
@@ -151,23 +152,37 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       if (_store.loginStore.isAdmin) {
+                                        showDialog<void>(
+                                            context: context,
+                                            builder: (_) => ProgressDialog(msg: tr("loading")));
+
                                         _store.loginStore.adminLogin(
                                           onSuccess: () async {
-                                            Navigator.push<dynamic>(
-                                              context,
-                                              PageRouteBuilder<dynamic>(
-                                                pageBuilder: (_, __, ___) =>
-                                                const MainView(),
-                                                transitionDuration:
-                                                const Duration(
-                                                    milliseconds: 600),
-                                              ),
-                                            );
-                                          },
-                                          onError: (String message) =>
+                                            Navigator.of(context).pop();
+                                            await _store.getData(onSuccess: () {
+                                              Navigator.pushReplacement<dynamic, dynamic>(
+                                                context,
+                                                PageRouteBuilder<dynamic>(
+                                                  pageBuilder: (_, __, ___) => MainView(store: _store,),
+                                                  transitionDuration:
+                                                  const Duration(
+                                                      milliseconds: 600),
+                                                ),
+                                              );
+                                            }, onError: (String message){
+                                              Navigator.of(context).pop();
                                               showAlertDialog(
                                                   context, tr('error'),
-                                                  message),
+                                                  message);
+                                              }, context:
+                                            context);
+                                          },
+                                          onError: (String message){
+                                            Navigator.of(context).pop();
+                                            showAlertDialog(
+                                                context, tr('error'),
+                                                message);
+                                          },
                                           context: context,
                                         );
                                       } else {
@@ -177,8 +192,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                               Navigator.push<dynamic>(
                                                 context,
                                                 PageRouteBuilder<dynamic>(
-                                                  pageBuilder: (_, __, ___) =>
-                                                  const MainView(),
+                                                  pageBuilder: (_, __, ___) => MainView(store: _store,),
                                                   transitionDuration:
                                                   const Duration(
                                                       milliseconds: 600),

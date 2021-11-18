@@ -44,7 +44,7 @@ abstract class Upload with Store {
 
         request.headers["accept"] = "application/json";
         request.headers['Authorization'] = 'Bearer ${TokenClass().token}';
-        request.headers['Content-Type'] = ""; //'multipart/form-data';
+        request.headers['Content-Type'] = 'multipart/form-data';
         request.fields['name'] = "teszt";
         print(file.toString());
         print(file!.path);
@@ -57,7 +57,7 @@ abstract class Upload with Store {
             await http.MultipartFile.fromPath(
               'caffFile',
               file!.path,
-              contentType: new MediaType('application', 'caff'),
+              //contentType: new MediaType('application', 'caff'),
             ),
           );
 
@@ -77,8 +77,8 @@ abstract class Upload with Store {
           onSuccess();
           logger.i("thirdStep was succesfull" + responseBody.toString());
         } else {
-          logger.e("Error at thirdStep upload: " + response.statusCode.toString() + responseBody.toString());
-          errorMessage = jsonDecode(responseBody)['message'].toString();
+            logger.e("Error at thirdStep upload: " + response.statusCode.toString() + responseBody.toString());
+          errorMessage = jsonDecode(responseBody)['detail'].toString();
         }
       } catch (e) {
         logger.e(e);

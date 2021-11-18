@@ -12,15 +12,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'login.dart';
 
 class MainView extends StatefulWidget {
-  const MainView({Key? key}) : super(key: key);
+  final MainStore store;
+  const MainView({Key? key, required this.store}) : super(key: key);
 
   @override
   _MainViewState createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
-  final MainStore mainStore = MainStore();
-
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -78,7 +77,7 @@ class _MainViewState extends State<MainView> {
                           Navigator.push<dynamic>(
                               context,
                               PageRouteBuilder<dynamic>(
-                                pageBuilder: (_, __, ___) => const UploadFileView(),
+                                pageBuilder: (_, __, ___) => UploadFileView(mainStore: widget.store,),
                                 transitionDuration:
                                 const Duration(milliseconds: 600),
                               ));
@@ -103,49 +102,69 @@ class _MainViewState extends State<MainView> {
               ),
             ),
             body: SafeArea(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(15.0.r),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          textInputAction: TextInputAction.next,
-                          //controller: emailTextFieldController,
-                          textAlignVertical: TextAlignVertical.center,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(Global.inputRadius.r),
-                              borderSide: BorderSide(color: Global.whiteWithOpacity),
-                            ),
-                            hintText: tr('search'),
-                            prefixIcon: const Icon(
-                              Icons.search,
-                            ),
+              child: Padding(
+                padding: EdgeInsets.all(15.0.r),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        textInputAction: TextInputAction.next,
+                        //controller: emailTextFieldController,
+                        textAlignVertical: TextAlignVertical.center,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(Global.inputRadius.r),
+                            borderSide: BorderSide(color: Global.whiteWithOpacity),
+                          ),
+                          hintText: tr('search'),
+                          prefixIcon: const Icon(
+                            Icons.search,
                           ),
                         ),
-                        ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 6,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0.h),
-                                child: Row(
-                                  children: [
-                                    CaffWidget(deletable: true,),
-                                    SizedBox(width: 16.w,),
-                                    CaffWidget(deletable: true,),
-                                  ],
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                  )
-                ),
+                      ),
+                      /*ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: (widget.store.list.length) ~/ 2,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0.h),
+                              child: Row(
+                                children: [
+                                  CaffWidget(deletable: true, caff: widget.store.list[index], store: widget.store, index: index, context: context,),
+                                  SizedBox(width: 16.w,),
+                                  CaffWidget(deletable: true, caff: widget.store.list[index + 1], store: widget.store, index: index + 1, context: context,),
+                                ],
+                              ),
+                            );
+                          }),*/
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GridView.count(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          // crossAxisCount is the number of columns
+                          crossAxisCount: 2,
+                          // This creates two columns with two items in each column
+                          children: List.generate(widget.store.list.length, (index) {
+                            return Padding(
+                              padding: EdgeInsets.all(5.0.r),
+                              child: Center(
+                                child: CaffWidget(deletable: widget.store.loginStore.isAdmin, caff: widget.store.list[index], store: widget.store, index: index, context: context,),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                    ],
+                  ),
+                )
               ),
             ),
           )

@@ -15,7 +15,7 @@ class _$CommentDto extends CommentDto {
   @override
   final String commentedBy;
   @override
-  final int commentedByUserId;
+  final String commentedByUserId;
 
   factory _$CommentDto([void Function(CommentDtoBuilder) updates]) =>
       (new CommentDtoBuilder()..update(updates)).build();
@@ -78,9 +78,9 @@ class CommentDtoBuilder implements Builder<CommentDto, CommentDtoBuilder> {
   String get commentedBy => _$this._commentedBy;
   set commentedBy(String commentedBy) => _$this._commentedBy = commentedBy;
 
-  int _commentedByUserId;
-  int get commentedByUserId => _$this._commentedByUserId;
-  set commentedByUserId(int commentedByUserId) =>
+  String _commentedByUserId;
+  String get commentedByUserId => _$this._commentedByUserId;
+  set commentedByUserId(String commentedByUserId) =>
       _$this._commentedByUserId = commentedByUserId;
 
   CommentDtoBuilder() {

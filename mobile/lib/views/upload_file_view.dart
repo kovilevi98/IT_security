@@ -8,13 +8,15 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/global/global.dart';
+import 'package:mobile/store/main_store.dart';
 import 'package:mobile/store/upload_store.dart';
 import 'package:mobile/widget/alertdialog.dart';
 import 'package:mobile/widget/background.dart';
 import 'package:mobile/widget/file_widget.dart';
 
 class UploadFileView extends StatefulWidget {
-  const UploadFileView({Key? key}) : super(key: key);
+  final MainStore mainStore;
+  const UploadFileView({Key? key, required this.mainStore}) : super(key: key);
 
   @override
   State<UploadFileView> createState() => _UploadFileViewState();
@@ -136,8 +138,19 @@ class _UploadFileViewState extends State<UploadFileView> {
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           await store.uploadData(
-                                            onSuccess: () {
-                                              Navigator.of(context, rootNavigator: true).pop();
+                                            onSuccess: () async {
+                                              await widget.mainStore.getData(onSuccess: () {
+
+                                              }, onError: (String message){
+                                                Navigator.of(context).pop();
+                                                showAlertDialog(
+                                                    context, tr('error'),
+                                                    message);
+                                              }, context:
+                                              context);
+                                              showAlertDialogAsync(context, "Successful", "The file upload was successful");
+                                              store.file = null;
+                                              //Navigator.of(context, rootNavigator: true).pop();
                                             },
                                             onError: (String message) {
                                               Navigator.of(context, rootNavigator: true).pop();

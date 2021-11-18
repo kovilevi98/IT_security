@@ -26,13 +26,37 @@ abstract class _MainStoreStore with Store {
   @observable
   int selectedIndex = 0;
 
+  @observable
+  var list = ObservableList<CaffDto>();
+
+  @observable
+  var listComments = ObservableList<CommentDto>();
+
+  @observable
+  CommentDtoPageResponse? commentDtoPageResponse;
+
+// This is action method. You need to use this method to react
+// your UI properly when something changes in your observable list.
+  @action
+  void addItem(CaffDto data) => list.add(data);
+
+// the same for this method but with a different operation.
+  @action
+  void removeItem(CaffDto data) => list.remove(data);
+
+  @action
+  void addItem2(CommentDto data) => listComments.add(data);
+
+// the same for this method but with a different operation.
+  @action
+  void removeItem2(CommentDto data) => listComments.remove(data);
+
   @action
   Future<void> getData({
     required void Function() onSuccess,
     required void Function(String message) onError,
     required BuildContext context,
   }) async {
-
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: "application/json"
     };
@@ -41,7 +65,7 @@ abstract class _MainStoreStore with Store {
       //DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000)
       Response<CaffDtoPageResponse> response =
       await Openapi(
-          interceptors:  [
+          interceptors: [
             TokenInterceptor(),
           ]
       ).getCaffApi().apiCaffGet(headers: headers);
@@ -49,6 +73,11 @@ abstract class _MainStoreStore with Store {
       logger.i("GetCaff was succesfull" + response.statusMessage.toString());
 
       if (response.statusCode.isSuccess()) {
+        list.clear();
+        for (int i = 0; i < response.data!.results.length; i++) {
+          addItem(response.data!.results[i]);
+        }
+
         onSuccess();
         logger.i("successLogin");
       }
@@ -61,11 +90,14 @@ abstract class _MainStoreStore with Store {
           onError(tr("timeout"));
           break;
         case DioErrorType.response:
-          logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
           if (error.response!.statusCode == 400) {
             final body = json.decode(error.response!.data);
             final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
-            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
             String errorString = "";
             errors.forEach((dynamic key, dynamic value) {
               String t = value.toString();
@@ -100,7 +132,6 @@ abstract class _MainStoreStore with Store {
     required BuildContext context,
     required int id,
   }) async {
-
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: "application/json"
     };
@@ -109,7 +140,7 @@ abstract class _MainStoreStore with Store {
       //DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000)
       Response<CaffDto> response =
       await Openapi(
-          interceptors:  [
+          interceptors: [
             TokenInterceptor(),
           ]
       ).getCaffApi().apiCaffCaffIdGet(id, headers: headers);
@@ -129,11 +160,14 @@ abstract class _MainStoreStore with Store {
           onError(tr("timeout"));
           break;
         case DioErrorType.response:
-          logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
           if (error.response!.statusCode == 400) {
             final body = json.decode(error.response!.data);
             final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
-            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
             String errorString = "";
             errors.forEach((dynamic key, dynamic value) {
               String t = value.toString();
@@ -168,25 +202,25 @@ abstract class _MainStoreStore with Store {
     required BuildContext context,
     required int id,
   }) async {
-
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: "application/json"
     };
 
     try {
-      //DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000)
+      logger.i("Delete Caff with id: " + id.toString());
+
       var response =
       await Openapi(
-          interceptors:  [
+          interceptors: [
             TokenInterceptor(),
           ]
       ).getCaffApi().apiCaffCaffIdDelete(id, headers: headers);
 
-      logger.i("GetCaff was succesfull" + response.statusMessage.toString());
+      logger.i("DeleteCaff was succesfull" + response.statusMessage.toString());
 
       if (response.statusCode.isSuccess()) {
         onSuccess();
-        logger.i("GetCaff");
+        logger.i("DeleteCaff");
       }
     } on DioError catch (error) {
       switch (error.type) {
@@ -197,11 +231,14 @@ abstract class _MainStoreStore with Store {
           onError(tr("timeout"));
           break;
         case DioErrorType.response:
-          logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
           if (error.response!.statusCode == 400) {
             final body = json.decode(error.response!.data);
             final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
-            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
             String errorString = "";
             errors.forEach((dynamic key, dynamic value) {
               String t = value.toString();
@@ -236,7 +273,6 @@ abstract class _MainStoreStore with Store {
     required BuildContext context,
     required int id,
   }) async {
-
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: "application/json"
     };
@@ -245,7 +281,7 @@ abstract class _MainStoreStore with Store {
       //DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000)
       Response<CommentDtoPageResponse> response =
       await Openapi(
-          interceptors:  [
+          interceptors: [
             TokenInterceptor(),
           ]
       ).getCaffApi().apiCaffCaffIdCommentGet(id, headers: headers);
@@ -253,6 +289,11 @@ abstract class _MainStoreStore with Store {
       logger.i("GetCaff was succesfull" + response.statusMessage.toString());
 
       if (response.statusCode.isSuccess()) {
+        commentDtoPageResponse = response.data!;
+        listComments.clear();
+        for(int i = 0; i < commentDtoPageResponse!.results.length; i++){
+          addItem2(commentDtoPageResponse!.results[i]);
+        }
         onSuccess();
         logger.i("GetCaff");
       }
@@ -265,11 +306,14 @@ abstract class _MainStoreStore with Store {
           onError(tr("timeout"));
           break;
         case DioErrorType.response:
-          logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
           if (error.response!.statusCode == 400) {
             final body = json.decode(error.response!.data);
             final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
-            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
             String errorString = "";
             errors.forEach((dynamic key, dynamic value) {
               String t = value.toString();
@@ -303,11 +347,10 @@ abstract class _MainStoreStore with Store {
     required void Function(String message) onError,
     required BuildContext context,
     required int id,
-    required int id2,
+    required String message,
   }) async {
-
     AddCommentDto request = AddCommentDto((builder) {
-      builder.commentText = "teszt";
+      builder.commentText = message;
     });
 
     Map<String, String> headers = {
@@ -317,16 +360,18 @@ abstract class _MainStoreStore with Store {
     try {
       Response<CommentDto> response =
       await Openapi(
-          interceptors:  [
+          interceptors: [
             TokenInterceptor(),
           ]
-      ).getCaffApi().apiCaffCaffIdCommentPost(id, addCommentDto: request, headers: headers);
+      ).getCaffApi().apiCaffCaffIdCommentPost(
+          id, addCommentDto: request, headers: headers);
 
-      logger.i("PostComment was succesfull" + response.statusMessage.toString());
+      logger.i(
+          "PostComment was succesfull" + response.statusMessage.toString());
 
       if (response.statusCode.isSuccess()) {
         onSuccess();
-        logger.i("GetCaff");
+        logger.i("PostComment");
       }
     } on DioError catch (error) {
       switch (error.type) {
@@ -337,11 +382,14 @@ abstract class _MainStoreStore with Store {
           onError(tr("timeout"));
           break;
         case DioErrorType.response:
-          logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
           if (error.response!.statusCode == 400) {
             final body = json.decode(error.response!.data);
             final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
-            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
             String errorString = "";
             errors.forEach((dynamic key, dynamic value) {
               String t = value.toString();
@@ -377,8 +425,6 @@ abstract class _MainStoreStore with Store {
     required int id,
     required int id2,
   }) async {
-
-
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: "application/json"
     };
@@ -386,16 +432,18 @@ abstract class _MainStoreStore with Store {
     try {
       var response =
       await Openapi(
-          interceptors:  [
+          interceptors: [
             TokenInterceptor(),
           ]
-      ).getCaffApi().apiCaffCaffIdCommentCommentIdDeleteDelete(id, id2, headers: headers);
+      ).getCaffApi().apiCaffCaffIdCommentCommentIdDeleteDelete(
+          id, id2, headers: headers);
 
-      logger.i("PostComment was succesfull" + response.statusMessage.toString());
+      logger.i(
+          "DeleteComment was succesfull" + response.statusMessage.toString());
 
       if (response.statusCode.isSuccess()) {
         onSuccess();
-        logger.i("GetCaff");
+        logger.i("DeleteComment");
       }
     } on DioError catch (error) {
       switch (error.type) {
@@ -406,11 +454,14 @@ abstract class _MainStoreStore with Store {
           onError(tr("timeout"));
           break;
         case DioErrorType.response:
-          logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
           if (error.response!.statusCode == 400) {
             final body = json.decode(error.response!.data);
             final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
-            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
             String errorString = "";
             errors.forEach((dynamic key, dynamic value) {
               String t = value.toString();
@@ -436,5 +487,15 @@ abstract class _MainStoreStore with Store {
           break;
       }
     }
+  }
+
+  Future<void> refreshComments({
+    required BuildContext context,
+    required int id,
+  }) async {
+    /*await getCommentsById(context: context,
+        onError: (String message) {},
+        onSuccess: () {},
+        id: id);*/
   }
 }
