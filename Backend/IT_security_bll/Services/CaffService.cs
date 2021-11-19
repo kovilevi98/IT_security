@@ -23,7 +23,7 @@ namespace IT_security_bll.Services
 {
     public class CaffService : ICaffService
     {
-        [DllImport(@"C:\Users\tamas\source\repos\Caff\Caff\Caffer.dll", EntryPoint = "processor", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Users\Levi\Documents\git\school\IT_security\Backend\NativeComponent\Caffer.dll", EntryPoint = "processor", CallingConvention = CallingConvention.StdCall)]
         public static extern int processor(string caffIn, string folderOut);
 
         private readonly ITSecurityDbContext _dbContext;

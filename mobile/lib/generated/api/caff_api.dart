@@ -16,6 +16,7 @@ import 'package:mobile/generated/model/comment_dto.dart';
 import 'package:mobile/generated/model/comment_dto_page_response.dart';
 import 'package:mobile/generated/model/order_direction.dart';
 import 'package:mobile/generated/model/problem_details.dart';
+import 'package:mobile/generated/model/update_caff_dto.dart';
 import 'package:mobile/generated/model/validation_problem_details.dart';
 
 class CaffApi {
@@ -253,6 +254,64 @@ class CaffApi {
     );
 
     dynamic _bodyData;
+
+    final _response = await _dio.request<dynamic>(
+      r'/api/Caff/{caffId}'.replaceAll('{' r'caffId' '}', caffId.toString()),
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    const _responseType = FullType(CaffDto);
+    final _responseData = _serializers.deserialize(
+      _response.data,
+      specifiedType: _responseType,
+    ) as CaffDto;
+
+    return Response<CaffDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  ///
+  ///
+  ///
+  Future<Response<CaffDto>> apiCaffCaffIdPut(
+      int caffId, {
+        UpdateCaffDto updateCaffDto,
+        CancelToken cancelToken,
+        Map<String, dynamic> headers,
+        Map<String, dynamic> extra,
+        ValidateStatus validateStatus,
+        ProgressCallback onSendProgress,
+        ProgressCallback onReceiveProgress,
+      }) async {
+    final Options _options = Options(
+      method: 'PUT',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+      contentType: 'application/json',
+    );
+
+    dynamic _bodyData;
+
+    const _type = FullType(UpdateCaffDto);
+    _bodyData = _serializers.serialize(updateCaffDto, specifiedType: _type);
 
     final _response = await _dio.request<dynamic>(
       r'/api/Caff/{caffId}'.replaceAll('{' r'caffId' '}', caffId.toString()),
