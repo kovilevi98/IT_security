@@ -126,6 +126,19 @@ namespace IT_security_bll.Services
             }
         }
 
+        public async Task<CaffDto> Update(int caffId, UpdateCaffDto updateCaffDto)
+        {
+            var caff = await _dbContext.Caffs
+                .Include(c => c.UploadedByUser)
+                .SingleOrDefaultAsync(c => c.CaffId == caffId)
+                ?? throw new EntityNotFoundException($"CAFF with id {caffId} was not found");
+
+            caff.CaffName = updateCaffDto.CaffName;
+            await _dbContext.SaveChangesAsync();
+
+            return _mapper.Map<CaffDto>(caff);
+        }
+
         public async Task<DownloadInfoDto> Download(int caffId)
         {
             var caff = await _dbContext.Caffs.SingleOrDefaultAsync(c => c.CaffId == caffId)

@@ -10,6 +10,8 @@ namespace IT_security_bll.Interfaces
     {
         public Task<CaffDto> Upload(IFormFile caffFile);
 
+        public Task<CaffDto> Update(int caffId, UpdateCaffDto updateCaffDto);
+
         public Task<DownloadInfoDto> Download(int caffId);
 
         public Task<PageResponse<CaffDto>> Search(PageRequest pageRequest, CaffFilter caffFilter);

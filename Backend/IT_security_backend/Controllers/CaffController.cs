@@ -36,6 +36,12 @@ namespace IT_security_api.Controllers
         public Task<CaffDto> Get([FromRoute] int caffId)
             => _caffService.Get(caffId);
 
+        [HttpPut("{caffId}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public Task<CaffDto> Update([FromRoute] int caffId, [FromBody] UpdateCaffDto updateCaffDto)
+            => _caffService.Update(caffId, updateCaffDto);
+
         [HttpGet("{caffId}/download")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<FileContentResult> Download([FromRoute] int caffId)
