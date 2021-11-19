@@ -10,6 +10,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile/widget/comment_widget.dart';
 import 'package:share/share.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 class GifDetailsView extends StatefulWidget {
   final MainStore store;
@@ -24,6 +25,13 @@ class GifDetailsView extends StatefulWidget {
 
 class _GifDetailsViewState extends State<GifDetailsView> {
   TextEditingController nameTextFieldController = TextEditingController();
+
+  Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,79 +98,103 @@ class _GifDetailsViewState extends State<GifDetailsView> {
                                       ),
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      (widget.store.loginStore.isAdmin)
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                //
-                                              },
-                                              child: Padding(
-                                                padding: EdgeInsets.all(10.0.r),
-                                                child: Container(
-                                                  height: 40.r,
-                                                  width: 40.r,
-                                                  padding: EdgeInsets.zero,
-                                                  decoration: BoxDecoration(
-                                                    color: Global
-                                                        .whiteWithOpacity2,
-                                                    shape: BoxShape.circle,
-                                                    boxShadow: const [
-                                                      BoxShadow(
-                                                        offset:
-                                                            Offset(2.0, 2.0),
-                                                        blurRadius: 4.0,
-                                                        color: Color.fromARGB(
-                                                            64, 0, 0, 0),
-                                                        spreadRadius:
-                                                            5, // changes position of shadow
+                                  FutureBuilder<void>(
+                                    future: init(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<void> snapshot) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          (widget.store.loginStore.isAdmin)
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    //
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.all(10.0.r),
+                                                    child: Container(
+                                                      height: 40.r,
+                                                      width: 40.r,
+                                                      padding: EdgeInsets.zero,
+                                                      decoration: BoxDecoration(
+                                                        color: Global
+                                                            .whiteWithOpacity2,
+                                                        shape: BoxShape.circle,
+                                                        boxShadow: const [
+                                                          BoxShadow(
+                                                            offset: Offset(
+                                                                2.0, 2.0),
+                                                            blurRadius: 4.0,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    64,
+                                                                    0,
+                                                                    0,
+                                                                    0),
+                                                            spreadRadius:
+                                                                5, // changes position of shadow
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
+                                                      child: Icon(
+                                                        FontAwesomeIcons.pen,
+                                                        size: 18.r,
+                                                        color: Global.blue,
+                                                      ),
+                                                    ),
                                                   ),
-                                                  child: Icon(
-                                                    FontAwesomeIcons.pen,
-                                                    size: 18.r,
-                                                    color: Global.blue,
-                                                  ),
+                                                )
+                                              : Text(""),
+                                          GestureDetector(
+                                            onTap: () {
+                                              widget.store.downloadById(
+                                                id: widget.caff.caffId,
+                                                onSuccess: () {
+                                                  showAlertDialog(
+                                                      context,
+                                                      "Successful",
+                                                      "The caff file successfully saved to your device");
+                                                },
+                                                onError: (message) {
+                                                  showAlertDialog(context,
+                                                      tr('error'), message);
+                                                },
+                                              );
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 30.0.w, 0),
+                                              child: Container(
+                                                height: 40.r,
+                                                width: 40.r,
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      Global.whiteWithOpacity2,
+                                                  shape: BoxShape.circle,
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      offset: Offset(2.0, 2.0),
+                                                      blurRadius: 4.0,
+                                                      color: Color.fromARGB(
+                                                          64, 0, 0, 0),
+                                                      spreadRadius:
+                                                          5, // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Icon(
+                                                  FontAwesomeIcons.download,
+                                                  size: 18.r,
+                                                  color: Global.blue,
                                                 ),
                                               ),
-                                            )
-                                          : Text(""),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Share.share(
-                                              'check out my website https://example.com');
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 30.0.w, 0),
-                                          child: Container(
-                                            height: 40.r,
-                                            width: 40.r,
-                                            decoration: BoxDecoration(
-                                              color: Global.whiteWithOpacity2,
-                                              shape: BoxShape.circle,
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  offset: Offset(2.0, 2.0),
-                                                  blurRadius: 4.0,
-                                                  color: Color.fromARGB(
-                                                      64, 0, 0, 0),
-                                                  spreadRadius:
-                                                      5, // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: Icon(
-                                              FontAwesomeIcons.shareAlt,
-                                              size: 18.r,
-                                              color: Global.blue,
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

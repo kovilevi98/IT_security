@@ -284,7 +284,7 @@ class CaffApi {
   /// 
   ///
   /// 
-  Future<Response<CaffDtoPageResponse>> apiCaffGet({ 
+  Future<Response<CaffDtoPageResponse>> apiCaffGet({
     int pageSize,
     int page,
     String orderBy,
@@ -414,4 +414,45 @@ class CaffApi {
     );
   }
 
+  ///
+  ///
+  ///
+  Future<Response<void>> apiCaffCaffIdDownloadGet(
+      int caffId, {
+        CancelToken cancelToken,
+        Map<String, dynamic> headers,
+        Map<String, dynamic> extra,
+        ValidateStatus validateStatus,
+        ProgressCallback onSendProgress,
+        ProgressCallback onReceiveProgress,
+      }) async {
+    final Options _options = Options(
+      method: 'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+      contentType: 'application/json',
+    );
+
+    dynamic _bodyData;
+
+    final _response = await _dio.request<dynamic>(
+      r'/api/Caff/{caffId}/download'.replaceAll('{' r'caffId' '}', caffId.toString()),
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    return _response;
+  }
+
 }
+
+

@@ -54,6 +54,36 @@ mixin _$MainStore on _MainStoreStore, Store {
     });
   }
 
+  final _$totalAtom = Atom(name: '_MainStoreStore.total');
+
+  @override
+  int get total {
+    _$totalAtom.reportRead();
+    return super.total;
+  }
+
+  @override
+  set total(int value) {
+    _$totalAtom.reportWrite(value, super.total, () {
+      super.total = value;
+    });
+  }
+
+  final _$currentPageAtom = Atom(name: '_MainStoreStore.currentPage');
+
+  @override
+  int get currentPage {
+    _$currentPageAtom.reportRead();
+    return super.currentPage;
+  }
+
+  @override
+  set currentPage(int value) {
+    _$currentPageAtom.reportWrite(value, super.currentPage, () {
+      super.currentPage = value;
+    });
+  }
+
   final _$commentDtoPageResponseAtom =
       Atom(name: '_MainStoreStore.commentDtoPageResponse');
 
@@ -77,9 +107,17 @@ mixin _$MainStore on _MainStoreStore, Store {
   Future<void> getData(
       {required void Function() onSuccess,
       required void Function(String) onError,
-      required BuildContext context}) {
-    return _$getDataAsyncAction.run(() => super
-        .getData(onSuccess: onSuccess, onError: onError, context: context));
+      required BuildContext context,
+      int? page,
+      bool add = false,
+      String? name}) {
+    return _$getDataAsyncAction.run(() => super.getData(
+        onSuccess: onSuccess,
+        onError: onError,
+        context: context,
+        page: page,
+        add: add,
+        name: name));
   }
 
   final _$getByIdAsyncAction = AsyncAction('_MainStoreStore.getById');
@@ -92,6 +130,17 @@ mixin _$MainStore on _MainStoreStore, Store {
       required int id}) {
     return _$getByIdAsyncAction.run(() => super.getById(
         onSuccess: onSuccess, onError: onError, context: context, id: id));
+  }
+
+  final _$downloadByIdAsyncAction = AsyncAction('_MainStoreStore.downloadById');
+
+  @override
+  Future<void> downloadById(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required int id}) {
+    return _$downloadByIdAsyncAction.run(() =>
+        super.downloadById(onSuccess: onSuccess, onError: onError, id: id));
   }
 
   final _$deleteByIdAsyncAction = AsyncAction('_MainStoreStore.deleteById');
@@ -208,6 +257,8 @@ mixin _$MainStore on _MainStoreStore, Store {
 selectedIndex: ${selectedIndex},
 list: ${list},
 listComments: ${listComments},
+total: ${total},
+currentPage: ${currentPage},
 commentDtoPageResponse: ${commentDtoPageResponse}
     ''';
   }
