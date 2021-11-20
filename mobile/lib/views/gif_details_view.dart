@@ -27,10 +27,10 @@ class _GifDetailsViewState extends State<GifDetailsView> {
   TextEditingController nameTextFieldController = TextEditingController();
 
   Future<void> init() async {
-    WidgetsFlutterBinding.ensureInitialized();
+    /*WidgetsFlutterBinding.ensureInitialized();
     await FlutterDownloader.initialize(
         debug: true // optional: set false to disable printing logs to console
-        );
+        );*/
   }
 
   @override
@@ -108,8 +108,31 @@ class _GifDetailsViewState extends State<GifDetailsView> {
                                         children: [
                                           (widget.store.loginStore.isAdmin)
                                               ? GestureDetector(
-                                                  onTap: () {
-                                                    //
+                                                  onTap: () async {
+                                                    await _displayTextInputDialog(context);
+                                                    await widget.store
+                                                        .renameCaff(
+                                                            onSuccess: () async {
+                                                              await widget.store.getData(onSuccess: () {
+
+                                                              }, onError: (String message){
+                                                                Navigator.of(context).pop();
+                                                                showAlertDialog(
+                                                                    context, tr('error'),
+                                                                    message);
+                                                              }, context:
+                                                              context);
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                            onError: (message) {
+                                                              showAlertDialog(
+                                                                  context,
+                                                                  tr('error'),
+                                                                  message);
+                                                            },
+                                                            context: context,
+                                                            id: widget
+                                                                .caff.caffId, name: nameTextFieldController.text);
                                                   },
                                                   child: Padding(
                                                     padding:
@@ -364,4 +387,117 @@ class _GifDetailsViewState extends State<GifDetailsView> {
       ),
     );
   }
+
+  _showDialog() async {
+    TextEditingController c = TextEditingController();
+    String newName = "";
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            height: 200.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                //SizedBox(height: 10.h,),
+                Padding(
+                  padding: EdgeInsets.all(12.0.r),
+                  child: Text(
+                    "Update name",
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(12.0.r),
+                  child: TextFormField(
+                    textInputAction: TextInputAction.next,
+                    controller: c,
+                    textAlignVertical: TextAlignVertical.center,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      fillColor: Colors.grey,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(Global.inputRadius.r),
+                        borderSide: BorderSide(color: Global.whiteWithOpacity),
+                      ),
+                      hintText: "New Name",
+                      prefixIcon: const Icon(
+                        FontAwesomeIcons.pen,
+                      ),
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  child: new Text("Save"),
+                  onPressed: () {
+                    setState(() {
+                      newName = c.text;
+                    });
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ),
+          ));
+        });
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'New Name',
+            style: Theme
+                .of(context)
+                .textTheme
+                .button,
+          ),
+          content: Padding(
+            padding: EdgeInsets.all(12.0.r),
+            child: TextFormField(
+              textInputAction: TextInputAction.next,
+              controller: controller,
+              textAlignVertical: TextAlignVertical.center,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                fillColor: Colors.grey,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius:
+                  BorderRadius.circular(Global.inputRadius.r),
+                  borderSide: BorderSide(color: Global.whiteWithOpacity),
+                ),
+                hintText: "New Name",
+                prefixIcon: const Icon(
+                  FontAwesomeIcons.pen,
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(tr('cancel')),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text(tr('OK')),
+              onPressed: () {
+                  nameTextFieldController.text = controller.text;
+                  Navigator.pop(context);
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

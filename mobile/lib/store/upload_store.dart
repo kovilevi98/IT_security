@@ -9,9 +9,9 @@ import 'package:mobile/generated/api.dart';
 import 'package:mobx/mobx.dart';
 import 'package:mobile/generated/api_util.dart';
 import 'package:mobile/global/multipart_request.dart';
-import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 part 'upload_store.g.dart';
 
@@ -28,12 +28,24 @@ abstract class Upload with Store {
     required void Function() onSuccess,
     required void Function(String message) onError,
     required BuildContext context,
+    required String name,
   }) async {
     var uri = Uri.parse(
         "http://192.168.0.138:5000/api/Caff/upload");
 
     bool result = false;
     String errorMessage = tr("photoError");
+
+    print(file.toString());
+    print(file!.path);
+    print('Original path: ${file!.path}');
+    String dir = path.dirname(file!.path);
+    String newPath = path.join(dir, name + ".caff");
+    print('NewPath: ${newPath}');
+    await file!.renameSync(newPath);
+
+    file=File(newPath);
+
     for (int i = 0; i < 1; i++) {
       try {
         var request = MultipartRequest(
@@ -46,17 +58,12 @@ abstract class Upload with Store {
         request.headers['Authorization'] = 'Bearer ${TokenClass().token}';
         request.headers['Content-Type'] = 'multipart/form-data';
         request.fields['name'] = "teszt";
-        print(file.toString());
-        print(file!.path);
-        if(file != null) {
-          //String? mimeType = mime(file?.path);
 
-          //String mimee = mimeType!.split('/')[0];
-          //String type = mimeType.split('/')[1];
+        if(file != null) {
           request.files.add(
             await http.MultipartFile.fromPath(
               'caffFile',
-              file!.path,
+              newPath,
               //contentType: new MediaType('application', 'caff'),
             ),
           );

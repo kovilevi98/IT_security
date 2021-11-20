@@ -186,6 +186,23 @@ mixin _$MainStore on _MainStoreStore, Store {
         message: message));
   }
 
+  final _$renameCaffAsyncAction = AsyncAction('_MainStoreStore.renameCaff');
+
+  @override
+  Future<void> renameCaff(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context,
+      required int id,
+      required String name}) {
+    return _$renameCaffAsyncAction.run(() => super.renameCaff(
+        onSuccess: onSuccess,
+        onError: onError,
+        context: context,
+        id: id,
+        name: name));
+  }
+
   final _$deleteCommentAsyncAction =
       AsyncAction('_MainStoreStore.deleteComment');
 

@@ -12,6 +12,7 @@ import 'package:mobile/generated/model/caff_dto.dart';
 import 'package:mobile/generated/model/caff_dto_page_response.dart';
 import 'package:mobile/generated/model/comment_dto.dart';
 import 'package:mobile/generated/model/comment_dto_page_response.dart';
+import 'package:mobile/generated/model/update_caff_dto.dart';
 import 'package:mobile/store/login_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -479,6 +480,82 @@ abstract class _MainStoreStore with Store {
       if (response.statusCode.isSuccess()) {
         onSuccess();
         logger.i("PostComment");
+      }
+    } on DioError catch (error) {
+      switch (error.type) {
+        case DioErrorType.connectTimeout:
+        case DioErrorType.sendTimeout:
+        case DioErrorType.receiveTimeout:
+          logger.e("Timeout: " + error.message);
+          onError(tr("timeout"));
+          break;
+        case DioErrorType.response:
+          logger.e("Login error: " + error.response!.data.toString() +
+              error.response!.statusCode.toString());
+          if (error.response!.statusCode == 400) {
+            final body = json.decode(error.response!.data);
+            final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<
+                dynamic,
+                dynamic>;
+            String errorString = "";
+            errors.forEach((dynamic key, dynamic value) {
+              String t = value.toString();
+              List<dynamic> list = value as List<dynamic>;
+              list.forEach((dynamic element) {
+                errorString += element.toString();
+                errorString += "\n";
+              });
+            });
+            logger.e("Error at login: " + error.response!.data.toString());
+            onError(errorString);
+
+
+            break;
+          }
+
+          onError(tr("basic_error"));
+          break;
+        case DioErrorType.cancel:
+          break;
+        case DioErrorType.other:
+          onError(tr("basic_error"));
+          break;
+      }
+    }
+  }
+
+  @action
+  Future<void> renameCaff({
+    required void Function() onSuccess,
+    required void Function(String message) onError,
+    required BuildContext context,
+    required int id,
+    required String name,
+  }) async {
+    UpdateCaffDto request = UpdateCaffDto((builder) {
+      builder.caffName = name;
+    });
+
+    Map<String, String> headers = {
+      HttpHeaders.acceptHeader: "application/json"
+    };
+
+    try {
+      Response<CaffDto> response =
+      await Openapi(
+          interceptors: [
+            TokenInterceptor(),
+          ]
+      ).getCaffApi().apiCaffCaffIdPut(
+          id, updateCaffDto:  request, headers: headers);
+
+      logger.i(
+          "PutCaff was succesfull" + response.statusMessage.toString());
+
+      if (response.statusCode.isSuccess()) {
+        onSuccess();
+        logger.i("PutCaff");
       }
     } on DioError catch (error) {
       switch (error.type) {

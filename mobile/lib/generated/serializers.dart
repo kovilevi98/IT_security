@@ -12,6 +12,7 @@ import 'package:built_value/serializer.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/json_object.dart';
 import 'package:built_value/standard_json_plugin.dart';
+import 'package:mobile/generated/model/update_caff_dto.dart';
 
 import 'model/add_comment_dto.dart';
 import 'model/caff_dto.dart';
@@ -45,6 +46,7 @@ part 'serializers.g.dart';
   UserDto,
   UserDtoPageResponse,
   ValidationProblemDetails,
+  UpdateCaffDto,
 ])
 Serializers serializers = (_$serializers.toBuilder()
       ..add(Iso8601DateTimeSerializer()))

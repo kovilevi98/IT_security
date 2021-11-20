@@ -156,7 +156,7 @@ class _UploadFileViewState extends State<UploadFileView> {
                                               Navigator.of(context, rootNavigator: true).pop();
                                               showAlertDialogAsync(context, tr('error'), message);
                                             },
-                                            context: context,);
+                                            context: context, name: nameTextFieldController.text,);
                                         },
                                         child: Text(
                                           tr('upload'),

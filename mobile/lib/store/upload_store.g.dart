@@ -30,9 +30,10 @@ mixin _$UploadStore on Upload, Store {
   Future<bool> uploadData(
       {required void Function() onSuccess,
       required void Function(String) onError,
-      required BuildContext context}) {
-    return _$uploadDataAsyncAction.run(() => super
-        .uploadData(onSuccess: onSuccess, onError: onError, context: context));
+      required BuildContext context,
+      required String name}) {
+    return _$uploadDataAsyncAction.run(() => super.uploadData(
+        onSuccess: onSuccess, onError: onError, context: context, name: name));
   }
 
   @override
