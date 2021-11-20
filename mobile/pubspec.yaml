@@ -51,6 +51,7 @@ dependencies:
   http_parser: ^4.0.0
   flutter_downloader: ^1.7.1
   flutter_typeahead: ^3.2.1
+  hb_check_code: ^0.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/global/global.dart';
 import 'package:mobile/store/login_store.dart';
 import 'package:mobile/store/main_store.dart';
@@ -11,6 +12,8 @@ import 'package:mobile/widget/alertdialog.dart';
 import 'package:mobile/widget/background.dart';
 import 'package:mobile/widget/progress_dialog_widget.dart';
 import 'package:mobile/widget/tile_container_widget.dart';
+import 'dart:math';
+import 'package:hb_check_code/hb_check_code.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -24,9 +27,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   TextEditingController emailTextFieldController = TextEditingController();
   TextEditingController passTextFieldController = TextEditingController();
+  TextEditingController codeTextFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    String code = "";
+    for (var i = 0; i < 6; i++) {
+      code = code + Random().nextInt(9).toString();
+    }
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -114,7 +122,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             SizedBox(height: 15.0.h),
                             Row(
                               children: [
-                                SizedBox(width: 180.w,),
+                                HBCheckCode(
+                                  code: code,
+                                ),
+                                SizedBox(width: 30.w,),
                                 TileContainerWidget(child:
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(
@@ -146,12 +157,35 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               ],
                             ),
                             SizedBox(height: 15.0.h),
+                            TextFormField(
+                              textInputAction: TextInputAction.next,
+                              controller: codeTextFieldController,
+                              textAlignVertical: TextAlignVertical.center,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(Global.inputRadius.r),
+                                  borderSide:
+                                  BorderSide(color: Global.whiteWithOpacity),
+                                ),
+                                hintText: "Captha Code",
+                                prefixIcon: const Icon(
+                                  FontAwesomeIcons.pen,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15.0.h),
                             Row(
                               children: [
                                 Expanded(
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      if (_store.loginStore.isAdmin) {
+                                    onPressed: () async {
+                                      if(codeTextFieldController.text != code){
+                                        showAlertDialog(
+                                            context, tr('error'),
+                                            "Captcha code is wrong");
+                                      } else if (_store.loginStore.isAdmin) {
                                         showDialog<void>(
                                             context: context,
                                             builder: (_) => ProgressDialog(msg: tr("loading")));
