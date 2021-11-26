@@ -8,7 +8,7 @@ std::vector<unsigned char> readFromFile(const std::string filename) {
 
 	if (!file.is_open()) 
 	{
-		throw new std::exception(); // file could not be opened
+		throw "File could not be opened";
 	}
 
 	// Stop eating new lines in binary mode!!!
@@ -22,7 +22,7 @@ std::vector<unsigned char> readFromFile(const std::string filename) {
 	file.seekg(0, std::ios::beg);
 
 	if (fileSize > (32 << 10 << 10)) {
-		throw new std::exception(); // File size exceeds 32 MB
+		throw "File size exceeds 32 MB";
 	}
 
 	// reserve capacity
@@ -42,7 +42,7 @@ void writeToFile(const unsigned char* data, const uint64_t length, const std::st
 
 	if (!outfile.is_open())
 	{
-		throw new std::exception(); // file could not be opened
+		throw "File could not be opened";
 	}
 
 	outfile.write((const char*)data, length);
@@ -52,7 +52,7 @@ void writeToFile(const std::vector<unsigned char>& data, const std::string filen
 
 	if (!outfile.is_open())
 	{
-		throw new std::exception(); // file could not be opened
+		throw "File could not be opened";
 	}
 
 	outfile.write((const char*)&data[0], data.size());

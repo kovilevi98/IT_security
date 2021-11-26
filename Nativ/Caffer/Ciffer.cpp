@@ -11,7 +11,7 @@ std::string readCaption(const unsigned char* ciff, const uint64_t ciffSize, cons
 		i = safe_add(i, 1);
 	}
 	if (i == headerSize) {
-		throw new std::exception(); // Caption missing \n terminator
+		throw "Caption missing \n terminator";
 	}
 	std::string text(chars.begin(), chars.end());
 	return text;
@@ -24,7 +24,7 @@ std::vector<std::string> readTags(const unsigned char* ciff, const uint64_t ciff
 	std::vector<std::string> tags;
 	uint64_t i = start;
 	if (ciff[safe_sub(headerSize, 1)] != '\0') {
-		throw new std::exception(); // Tags not properly terminated
+		throw "Tags not properly terminated";
 	}
 	std::vector<unsigned char> currentTag;
 	while (i < headerSize) {
@@ -97,23 +97,23 @@ std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t c
 	const uint64_t minFileSize = 38; // magic (4) + header_size (8) + content_size(8) + width (8) + height (8) + caption (>1) + tags (>1)
 	const uint64_t fileSize = ciffSize;
 	if (fileSize < minFileSize) {
-		throw new std::exception(); // File too short
+		throw "File too short";
 	}
 	if (!(ciff[0] == 'C' && ciff[1] == 'I' && ciff[2] == 'F' && ciff[3] == 'F')) {
-		throw new std::exception(); // Invalid magic
+		throw "Invalid magic";
 	}
 	uint64_t headerSize = read8ByteIntLe(ciff, ciffSize, 4);
 	if (headerSize > fileSize) {
-		throw new std::exception(); // Header size bigger than file size
+		throw "Header size bigger than file size";
 	}
 	uint64_t contentSize = read8ByteIntLe(ciff, ciffSize, 4 + 8);
 	uint64_t width = read8ByteIntLe(ciff, ciffSize, 4 + 8 + 8);
 	uint64_t height = read8ByteIntLe(ciff, ciffSize, 4 + 8 + 8 + 8);
 	if (fileSize != safe_add(headerSize, contentSize)) {
-		throw new std::exception(); // Total size mismatch
+		throw "Total size mismatch";
 	}
 	if (contentSize != (safe_mul(width, safe_mul(height, 3)))) {
-		throw new std::exception(); // Content size mismatch
+		throw "Content size mismatch";
 	}
 
 	/*

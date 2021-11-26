@@ -4,17 +4,17 @@ using std::vector;
 
 void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint64_t* readPosition, std::vector<uint64_t>& durations, std::vector<vector<unsigned char>>& bmps) {
 	if (safe_add(*readPosition, 1) > caffSize) {
-		throw new std::exception(); // Last block invalid
+		throw "Last block invalid";
 	}
 	const unsigned char blockType = caff[(*readPosition)++];
 	if (blockType == 0x3) {
 		const uint64_t blocklength = read8ByteIntLe(caff, caffSize, *readPosition);
 		if (safe_add(safe_add(*readPosition, 8), blocklength) > caffSize) {
-			throw new std::exception(); // Block overflows file
+			throw "Block overflows file";
 		}
 		*readPosition = safe_add(*readPosition, 8);
 		if (blocklength < 8) {
-			throw new std::exception(); // Block too short
+			throw "Block too short";
 		}
 		const uint64_t duration = read8ByteIntLe(caff, caffSize, *readPosition);
 
@@ -30,7 +30,7 @@ void readBlockDuration(const unsigned char* caff, const uint64_t caffSize, uint6
 		*readPosition = safe_add(*readPosition, safe_add(8, blocklength));
 	}
 	else {
-		throw new std::exception(); // Invalid block type
+		throw "Invalid block type";
 	}
 }
 
@@ -39,21 +39,21 @@ void processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
 	const uint64_t expectedHeaderSize = 20; //
 	const uint64_t fileSize = caff.size();
 	if (caff.size() < minFileSize) {
-		throw new std::exception(); // CAFF too short
+		throw "CAFF too short";
 	}
 	if (caff[0] != 0x01) {
-		throw new std::exception(); // CAFF starts with invalid block
+		throw "CAFF starts with invalid block";
 	}
 	const uint64_t headerLength = read8ByteIntLe(caff, 1);
 	if (headerLength != expectedHeaderSize) {
-		throw new std::exception(); // Header block length invalid
+		throw "Header block length invalid";
 	}
 	if (!(caff[9] == 'C' && caff[10] == 'A' && caff[11] == 'F' && caff[12] == 'F')) {
-		throw new std::exception(); // Invalid magic
+		throw "Invalid magic";
 	}
 	const uint64_t headerSize = read8ByteIntLe(caff, 1 + 8 + 4);
 	if (headerSize != expectedHeaderSize) {
-		throw new std::exception(); // header_size invalid
+		throw "header_size invalid";
 	}
 	const uint64_t numAnim = read8ByteIntLe(caff, 1 + 8 + 4 + 8);
 	std::vector<uint64_t> durations;
@@ -64,10 +64,10 @@ void processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
 			readBlockDuration(&caff[0], caff.size(), &readPosition, durations, bmps);
 		}
 		if (readPosition != fileSize) {
-			throw new std::exception(); // Last block size invalid
+			throw "Last block size invalid";
 		}
 		if (numAnim != durations.size()) {
-			throw new std::exception(); // Count of real animation blocks doesn't match num_anim
+			throw "Count of real animation blocks doesn't match num_anim";
 		}
 	}
 	writeMetaFile(durations, outputDir + "meta.txt");
@@ -93,7 +93,8 @@ int processor(const char* caffIn, const char* folderOut) {
 		processCaff(caff, folderStr);
 		return 0;
 	}
-	catch (...) {
+	catch (const char* msg) {
+		printf("%s\n", msg);
 		return 1;
 	}
 }
