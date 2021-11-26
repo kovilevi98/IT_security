@@ -1,20 +1,20 @@
 CC = g++
 CFLAGS = -Wall
 
-main: main.o caffer.o ciffer.o files.o common.o
-	$(CC) $(CFLAGS) main.o caffer.o ciffer.o files.o common.o -o main
+main: Main.o Caffer.o Ciffer.o Files.o Common.o
+	$(CC) $(CFLAGS) Main.o Caffer.o Ciffer.o Files.o Common.o -o Main
 
-main.o: main.cpp
-	$(CC) $(CFLAGS) -o main.o -c main.cpp
+main.o: Main.cpp
+	$(CC) $(CFLAGS) -o Main.o -c Main.cpp
 
-caffer.o: caffer.cpp caffer.h
-	$(CC) $(CFLAGS) -o caffer.o -c caffer.cpp
+caffer.o: Caffer.cpp Caffer.h
+	$(CC) $(CFLAGS) -o Caffer.o -c Caffer.cpp
 
-files.o: files.cpp files.h
-	$(CC) $(CFLAGS) -o files.o -c files.cpp
+files.o: Files.cpp Files.h
+	$(CC) $(CFLAGS) -o Files.o -c Files.cpp
 
-ciffer.o: ciffer.cpp ciffer.h
-	$(CC) $(CFLAGS) -o ciffer.o -c ciffer.cpp
+ciffer.o: Ciffer.cpp Ciffer.h
+	$(CC) $(CFLAGS) -o Ciffer.o -c Ciffer.cpp
 
-common.o: common.cpp common.h
-	$(CC) $(CFLAGS) -o common.o -c common.cpp
+common.o: Common.cpp Common.h
+	$(CC) $(CFLAGS) -o Common.o -c Common.cpp
