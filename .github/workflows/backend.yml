@@ -51,5 +51,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"IT_security_backend" /o:"tom002" /d:sonar.login="a51b4faef0a4165555cf1299208952c8984a89f9" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build Backend\IT_security_backend.sln
+          dotnet build Backend\IT_security_backend\IT_security_api.csproj
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="a51b4faef0a4165555cf1299208952c8984a89f9"
