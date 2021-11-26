@@ -100,7 +100,7 @@ std::vector<unsigned char> ciffToBmp(const unsigned char* ciff, const uint64_t c
 		throw "File too short";
 	}
 	if (!(ciff[0] == 'C' && ciff[1] == 'I' && ciff[2] == 'F' && ciff[3] == 'F')) {
-		throw "Invalid magic";
+		throw "Invalid CIFF magic";
 	}
 	uint64_t headerSize = read8ByteIntLe(ciff, ciffSize, 4);
 	if (headerSize > fileSize) {

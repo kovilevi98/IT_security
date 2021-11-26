@@ -49,7 +49,7 @@ void processCaff(std::vector<unsigned char>& caff, std::string outputDir) {
 		throw "Header block length invalid";
 	}
 	if (!(caff[9] == 'C' && caff[10] == 'A' && caff[11] == 'F' && caff[12] == 'F')) {
-		throw "Invalid magic";
+		throw "Invalid CAFF magic";
 	}
 	const uint64_t headerSize = read8ByteIntLe(caff, 1 + 8 + 4);
 	if (headerSize != expectedHeaderSize) {
