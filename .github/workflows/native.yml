@@ -1,10 +1,10 @@
 name: Native CI
-on:
-  push:
-    branches: [ nativ/sonar ]
-  workflow_dispatch:
-    # Allow manual trigger for debugging the workflow.
-env:
+  on:
+    push:
+      branches: [ nativ/sonar ]
+    workflow_dispatch:
+      # Allow manual trigger for debugging the workflow.
+  env:
       SONAR_SCANNER_VERSION: 4.6.1.2450
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
