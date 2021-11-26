@@ -39,6 +39,7 @@ jobs:
       run: |
         set -x
         cd build
+        mkdir bw_output
         ls -la bw_output
         mv sonar-scanner-*-windows sonar-scanner
     - name: Sonar Scanner
