@@ -9,6 +9,7 @@ on:
 env:
   SONAR_WRAPPER_URL: https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
   SONAR_SCANNER_URL: https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-windows.zip
+  SONAR_SERVER_URL: https://sonarcloud.io
 jobs:
   CIChecks:
     runs-on: windows-latest
@@ -52,4 +53,4 @@ jobs:
         ECHO PATH=%PATH%
         ECHO DIR %cd%\build\bw_output\
         DIR %cd%\build\bw_output\
-        sonar-scanner.bat -Dsonar.cfamily.build-wrapper-output=%cd%\build\bw_output
+        sonar-scanner.bat -Dsonar.cfamily.build-wrapper-output=%cd%\build\bw_output -Dsonar.host.url="${{ env.SONAR_SERVER_URL }}"
