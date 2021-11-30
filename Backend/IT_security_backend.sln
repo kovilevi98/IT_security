@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT_security_api", "IT_security_backend\IT_security_api.csproj", "{6A3161D2-35C5-4D2A-82A9-A4A1496B3843}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IT_security_api", "IT_security_backend\IT_security_api.csproj", "{6A3161D2-35C5-4D2A-82A9-A4A1496B3843}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT_security_bll", "IT_security_bll\IT_security_bll.csproj", "{8E02E04F-4368-4927-8B64-1CCAE349154B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IT_security_bll", "IT_security_bll\IT_security_bll.csproj", "{8E02E04F-4368-4927-8B64-1CCAE349154B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT_security_dal", "IT_security_dal\IT_security_dal.csproj", "{5C9D57FE-2035-4B16-9AD5-D4C0D61F32BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IT_security_dal", "IT_security_dal\IT_security_dal.csproj", "{5C9D57FE-2035-4B16-9AD5-D4C0D61F32BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT_security_common", "IT_security_common\IT_security_common.csproj", "{B75A1492-B3AB-49E1-803D-0A227B605513}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IT_security_common", "IT_security_common\IT_security_common.csproj", "{B75A1492-B3AB-49E1-803D-0A227B605513}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{752D8C0A-5C57-4D1D-A84E-2BE672AC5434}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT_security_tests", "IT_security_tests\IT_security_tests.csproj", "{687EF7D4-38E9-418D-8419-6B4AF8878AA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{752D8C0A-5C57-4D1D-A84E-2BE672AC5434}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{752D8C0A-5C57-4D1D-A84E-2BE672AC5434}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{752D8C0A-5C57-4D1D-A84E-2BE672AC5434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{687EF7D4-38E9-418D-8419-6B4AF8878AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{687EF7D4-38E9-418D-8419-6B4AF8878AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{687EF7D4-38E9-418D-8419-6B4AF8878AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{687EF7D4-38E9-418D-8419-6B4AF8878AA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
