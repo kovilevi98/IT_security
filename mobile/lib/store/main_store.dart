@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ import 'package:mobile/generated/model/update_caff_dto.dart';
 import 'package:mobile/store/login_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'main_store.g.dart';
 
@@ -232,7 +234,7 @@ abstract class _MainStoreStore with Store {
     };
 
     try {
-      var response =
+      Response response =
       await Openapi(
           interceptors: [
             TokenInterceptor(),
@@ -256,6 +258,18 @@ abstract class _MainStoreStore with Store {
       logger.i("Download Caff was succesfull" + response.statusMessage.toString());
 
       if (response.statusCode.isSuccess()) {
+        List<int> bytes = utf8.encode(response.data.toString());
+        print(bytes);
+        Uint8List input = Uint8List.fromList(bytes);
+        ByteData bd = input.buffer.asByteData();
+        Directory? directory = await getExternalStorageDirectory();
+        directory = (await getExternalStorageDirectory())!;
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+        writeToFile(bd, '${directory.path}/test.caff');
+        print(directory.path);
+        var x = await directory.listSync();
         onSuccess();
         logger.i("Download Caff");
       }
@@ -681,5 +695,11 @@ abstract class _MainStoreStore with Store {
         onError: (String message) {},
         onSuccess: () {},
         id: id);*/
+  }
+
+  Future<void> writeToFile(ByteData data, String path) {
+    final buffer = data.buffer;
+    return new File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 }

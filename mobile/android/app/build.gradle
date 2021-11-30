@@ -25,7 +25,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-android {
+plugins {
+    id "org.sonarqube" version "3.3"
+}
+
+cdandroid {
     compileSdkVersion 31
 
     compileOptions {

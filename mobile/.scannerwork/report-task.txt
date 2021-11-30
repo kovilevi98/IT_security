@@ -1,0 +1,6 @@
+projectKey=hu.bme.vik.mobile
+serverUrl=http://localhost:9000
+serverVersion=9.2.0.49834
+dashboardUrl=http://localhost:9000/dashboard?id=hu.bme.vik.mobile
+ceTaskId=AX1jetvMj5JBLSDK4w5a
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AX1jetvMj5JBLSDK4w5a
