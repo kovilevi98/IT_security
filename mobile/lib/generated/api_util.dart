@@ -29,3 +29,15 @@ dynamic encodeFormParameter(Serializers serializers, dynamic value, FullType typ
   }
   return json.encode(serialized);
 }
+
+class TokenClass {
+  static final TokenClass _singleton = TokenClass._internal();
+
+  String token;
+  factory TokenClass() {
+    return _singleton;
+  }
+
+  TokenClass._internal();
+}
+

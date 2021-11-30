@@ -80,6 +80,17 @@ mixin _$LoginStore on Login, Store {
         super.login(onSuccess: onSuccess, onError: onError, context: context));
   }
 
+  final _$adminLoginAsyncAction = AsyncAction('Login.adminLogin');
+
+  @override
+  Future<void> adminLogin(
+      {required void Function() onSuccess,
+      required void Function(String) onError,
+      required BuildContext context}) {
+    return _$adminLoginAsyncAction.run(() => super
+        .adminLogin(onSuccess: onSuccess, onError: onError, context: context));
+  }
+
   @override
   String toString() {
     return '''

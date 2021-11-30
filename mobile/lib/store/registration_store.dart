@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:built_value/serializer.dart';
@@ -61,12 +62,6 @@ abstract class Registration with Store {
 
       if (response.statusCode.isSuccess()) {
       }
-      /*Navigator.push<dynamic>(
-          context,
-          PageRouteBuilder<dynamic>(
-            pageBuilder: (_, __, ___) => StepperView(),
-            transitionDuration: Duration(milliseconds: 600),
-          ),);*/
       onSuccess();
       logger.i("Registration");
 
@@ -80,15 +75,23 @@ abstract class Registration with Store {
           break;
         case DioErrorType.response:
           logger.e("Login error: " + error.response!.data.toString() + error.response!.statusCode.toString());
-          if (error.response!.statusCode == 499) {
-            const FullType responseType = FullType(ProblemDetails);
-            final ProblemDetails responseData =
-            Openapi().serializers.deserialize(
-              error.response!.data,
-              specifiedType: responseType,
-            ) as ProblemDetails;
+          if (error.response!.statusCode == 400) {
+            final body = json.decode(error.response!.data);
+            final Map<dynamic, dynamic> data = body as Map<dynamic, dynamic>;
+            final Map<dynamic, dynamic> errors = data['errors'] as Map<dynamic, dynamic>;
+            String errorString = "";
+            errors.forEach((dynamic key, dynamic value) {
+              String t = value.toString();
+              List<dynamic> list = value as List<dynamic>;
+              list.forEach((dynamic element) {
+                errorString += element.toString();
+                errorString += "\n";
+              });
+            });
+            logger.e("Error at login: " + error.response!.data.toString());
+            onError(errorString);
 
-            onError(responseData.title);
+
             break;
           }
 

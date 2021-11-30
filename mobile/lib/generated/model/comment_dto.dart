@@ -26,7 +26,7 @@ abstract class CommentDto implements Built<CommentDto, CommentDtoBuilder> {
 
     @nullable
     @BuiltValueField(wireName: r'commentedByUserId')
-    int get commentedByUserId;
+    String get commentedByUserId;
 
     CommentDto._();
 
@@ -71,7 +71,7 @@ class _$CommentDtoSerializer implements StructuredSerializer<CommentDto> {
             result
                 ..add(r'commentedByUserId')
                 ..add(serializers.serialize(object.commentedByUserId,
-                    specifiedType: const FullType(int)));
+                    specifiedType: const FullType(String)));
         }
         return result;
     }
@@ -101,7 +101,7 @@ class _$CommentDtoSerializer implements StructuredSerializer<CommentDto> {
                     break;
                 case r'commentedByUserId':
                     result.commentedByUserId = serializers.deserialize(value,
-                        specifiedType: const FullType(int)) as int;
+                        specifiedType: const FullType(String)) as String;
                     break;
             }
         }
