@@ -12,6 +12,7 @@
 /Backend/IT_security_bll/obj
 /Backend/IT_security_bll/bin/Debug/net5.0
 /Backend/IT_security_backend/bin/Debug/net5.0
+!/Backend/IT_security_backend/bin/Debug/net5.0/Caffer.dll
 /Backend/IT_security_backend/obj
 /.vs
 /Backend/bin/Debug
