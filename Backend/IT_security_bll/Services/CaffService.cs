@@ -23,7 +23,7 @@ namespace IT_security_bll.Services
 {
     public class CaffService : ICaffService
     {
-        [DllImport(@"D:\Egyetem\Git\IT_security\Backend\NativeComponent\Caffer.dll", EntryPoint = "processor", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Caffer.dll", EntryPoint = "processor", CallingConvention = CallingConvention.StdCall)]
         public static extern int processor(string caffIn, string folderOut);
 
         private readonly ITSecurityDbContext _dbContext;
@@ -47,8 +47,6 @@ namespace IT_security_bll.Services
 
         public async Task<CaffDto> Upload(IFormFile caffFile)
         {
-            var asd = httpContext.HttpContext.Request.Form;
-
             var uploadLocation = _hostEnvironment.ContentRootPath;
             var filename = caffFile.FileName.Split('.')[0];
             var randomname = Guid.NewGuid().ToString();

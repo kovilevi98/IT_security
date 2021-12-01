@@ -28,4 +28,10 @@
     <Folder Include="Upload\Caff" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Caffer.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
