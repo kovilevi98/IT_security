@@ -80,8 +80,9 @@ class CaffWidget extends StatelessWidget {
                           await store.deleteById(
                             onSuccess: () {
                               store.removeItem(caff);
-                              showAlertDialog(
-                                  context, "Successful", "Successful delete!");
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text("Succesfull delete"),
+                              ));
                             },
                             onError: (message) {
                               showAlertDialog(context, tr('error'), message);

@@ -24,6 +24,7 @@ Future<void> showAlertDialog(BuildContext context, String title, String message)
 
   // show the dialog
   showDialog<dynamic>(
+    useRootNavigator: true,
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
